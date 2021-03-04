@@ -161,7 +161,7 @@ function scan_single_axis(
         end
 
         wave_info.waveform[:, scan_index] = data.volts
-        wave_info.coordinates[scan_index] = pos_xyz(scanner.xyz)
+        wave_info.coordinates[:, scan_index] = pos_xyz(scanner.xyz)
 
 
         if verbose

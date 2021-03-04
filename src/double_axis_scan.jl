@@ -143,7 +143,6 @@ function scan_double_axis(
             wave_info_first_axis.wave_info
         wave_info.coordinates[:, :, scan_index] =
             wave_info_first_axis.coordinates
-        # TODO: Ask. Do we want to do this?
         if first_pass
             wave_info.info = wave_info_first_axis.info
         end
