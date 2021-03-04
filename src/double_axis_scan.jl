@@ -11,10 +11,10 @@ surpressed. The user usually doesn't have to use the variable called.
 # Arguments
 - `hydro`: the structure for all controller connections.
 - `x_axis_range::Array`: An array that contains the start and end point
-                  of the desired range in the x-direction.
-                  (Must be 1 or 2 elements long)
+                         of the desired range in the x-direction.
+                         (Must be 1 or 2 elements long)
 - `x_axis_num_scans::Int`: The number of points/scans the user desires to
-                      record along the x-axis.
+                           record along the x-axis.
 - `y_axis_range::Array`: Contains the start and end point
                          of the desired range in the
                          y-direction.
