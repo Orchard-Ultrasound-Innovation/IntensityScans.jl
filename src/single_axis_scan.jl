@@ -36,7 +36,6 @@ mutable struct Waveinfo
     time::Union{Array{Float64, 1}, Nothing}
     waveinfo::Union{Array{Float64}, Nothing}
     coordinates::Union{Array{Tuple{Real, Real, Real}}, Nothing}
-    unfiltered_waveform
 end
 
 Waveinfo() = Waveinfo(nothing, nothing, nothing, nothing, nothing)
@@ -44,8 +43,7 @@ Waveinfo() = Waveinfo(nothing, nothing, nothing, nothing, nothing)
 function Waveinfo(
     sample_size_of_single_scan,
     number_of_scans_first_axis,
-    number_of_scans_second_axis = 1;
-    filter=false
+    number_of_scans_second_axis = 1,
 )
     wave_info = Waveinfo()
     wave_info.wave_form = zeros(
@@ -58,13 +56,6 @@ function Waveinfo(
         number_of_scans_first_axis,
         number_of_scans_second_axis
     )
-    if filter
-        wave_info.unfiltered_waveform = zeros(
-            sample_size_of_single_scan,
-            number_of_scans_first_axis,
-            number_of_scans_second_axis
-        )
-    end
     return wave_info
 end
 
@@ -105,10 +96,10 @@ end
 """
 function scan_x(
     hydro::IntensityScan, x_range, num_points;
-    verbose=true, filter=false
+    verbose=true, 
 )
     scan_single_axis(
-        hydro, x_range, num_points, move_x_abs; verbose=verbose, filter=filter
+        hydro, x_range, num_points, move_x_abs; verbose=verbose, 
     )
 end
 
@@ -143,11 +134,11 @@ end
 """
 function scan_y(
     hydro, y_range, num_points;
-    verbose=true, filter=false
+    verbose=true, 
 )
     scan_single_axis(
         hydro, y_range, num_points, move_y_abs;
-        verbose=verbose, filter=filter
+        verbose=verbose, 
     )
 end
 
@@ -194,24 +185,24 @@ wave_info_z = scan_z(scan_handle, scan_range, num_scans)
 """
 function scan_z(
     hydro, z_range, num_points;
-    verbose=true, filter=false
+    verbose=true, 
 )
     scan_single_axis(
         hydro, z_range, num_points, move_z_abs;
-        verbose=verbose, filter=filter
+        verbose=verbose, 
     )
 end
 
 
 function scan_single_axis(
     hydro, axis_range, num_scans, move_func;
-    verbose=true, filter=false
+    verbose=true, 
 )
     start_time = time()
     axis = get_axis(move_func)
     check_xyz_limits(hydro, axis, axis_range)
     positions = create_positions_vector(axis_range, num_scans)
-    wave_info = Waveinfo(hydro.sample_size, num_scans; filter=filter) 
+    wave_info = Waveinfo(hydro.sample_size, num_scans)
 
     for scan_index in 1:num_scans
         if verbose 
@@ -242,9 +233,6 @@ function scan_single_axis(
         wave_info.wave_form[:, scan_index] = data.volts
         wave_info.coordinates[scan_index] = pos_xyz(hydro.xyz)
 
-        if filter
-            wave_info.unfiltered_waveform[:, scan_index] = data.volts
-        end
 
         if verbose
             time_left = elapsed_time(loop_time) do elapsed_seconds

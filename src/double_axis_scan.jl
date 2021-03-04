@@ -5,7 +5,6 @@ function scan_xy(
     y_axis_range,
     y_axis_num_scans;
     verbose=true,
-    filter=false
 )
     scan_double_axis(
         hydro,
@@ -16,7 +15,6 @@ function scan_xy(
         y_axis_num_scans,
         move_y_abs;
         verbose=verbose,
-        filter=filter
     )
     
 end
@@ -30,7 +28,6 @@ function scan_double_axis(
     second_axis_num_scans,
     move_second_axis::Function;
     verbose=true,
-    filter=false
 )
     start_time = time()    
     first_axis = get_axis(scan_first_axis)
@@ -44,7 +41,6 @@ function scan_double_axis(
         hydro.sample_size, 
         first_axis_num_scans, 
         second_axis_num_scans; 
-        filter=filter,
     )
     for scan_index in 1:second_axis_num_scans
         if verbose 
@@ -58,7 +54,7 @@ function scan_double_axis(
 
         wave_info_first_axis = scan_first_axis(
             hydro, first_axis_range, first_axis_num_scans;
-            verbose=false, filter=filter,
+            verbose=false, 
         )
         wave_info.wave_form[:, :, scan_index] =
             wave_info_first_axis.wave_info
@@ -69,10 +65,6 @@ function scan_double_axis(
             wave_info.info = wave_info_first_axis.info
         end
 
-        if filter
-            wave_info.unfiltered_waveform[:, :, scan_index] =
-                wave_info_first_axis.unfiltered_waveform
-        end
         if verbose
             time_left = elapsed_time(loop_time) do elapsed_seconds
                 elapsed_seconds * (second_axis_num_scans - scan_index)
