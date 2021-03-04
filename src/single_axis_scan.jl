@@ -1,119 +1,108 @@
 using Dates
 
 """
- wave_info_x = ky_hydro_scan_x(settings, axis_range, num_points, called)
+    scan_x(scanner, x_range, x_num_scans; kwargs..)
 
- This function moves along the x axis and grabs data based on a fixed
- increment passed by the user. This program uses the ky_scope_rs_ch_data
- function that returns a structure with helpful information. There are
- three mantadory inputs and one optional input that is used only when this
- function is called by other functions and the printed messages should be
- supressed. The user usually doesn't have to use the variable called.
+Move along the x axis and grab data based on a fixed increment.
 
- Delete:
-       settings: the structure for all controller connections.
- Input: 
-     hydrophone: the structure for all controller connections.
-        axis_range: A 1x2 or 1x1 array that contains the start and end point
-                 of the desired range in the x-direction.
-          num_points: The number of points the user desires to record along the
-                 x-axis.
-         called: This variable is either one or zero and is used to turn
-                 off user notifications when another function calls this
-                 one. User usually won't have to use this variable.
+# Arguments
+- `scanner::IntensityScan`: the structure for all controller connections.
+- `x_range`: An array or tuple that contains the start and end 
+             point of the desired range in the x-direction.
+             (Must be 1 or 2 elements long)
+- `x_num_scans::Int`: The number of points/scans the user desires 
+                      to record along the x-axis.
+# Keywords
+- `verbose`::Bool: Optional, defaults to: true
 
- Output:
-   wave_info_x: A structure that contains the data that traces num_points of
-                waveforms and the coordinates travelled. The waveforms are
-                stored under wave_info_x.wave_form and the coordinates 
-                travelled is stored under wave_info_x.coordinates. The
-                coordinates are the (x, y, z) coordinates along the path
-                that the function took.
+# Returns
+- Waveinfo_1D
 
- Example:
- scan_range = [0 1]; num_points = 5;
- wave_info_x = ky_hydro_scan_x(settings, scan_range, num_points);
+# Example
+```
+xyz_handle = initialize(ThorlabsLTS150)
+scope_handle = initialize(Scope350MHz)
+# Sample size 100, read from scope on channel 1
+scanner_handle = IntensityScan(xyz_handle, scope_handle, 100, 1)
+
+scan_range_x = [0, 2]
+num_points_x = 5
+
+wave_info_x = scan_x(scanner_handle, scan_range_x, num_points_x)
+```
 """
 function scan_x(
-    hydro::IntensityScan, x_range, num_points;
+    scanner::IntensityScan, x_range, num_points;
     verbose=true, 
 )
     scan_single_axis(
-        hydro, x_range, num_points, move_x_abs; verbose=verbose, 
+        scanner, x_range, num_points, move_x_abs; verbose=verbose, 
     )
 end
 
 """
- This function moves along the y axis and grabs data based on a fixed increment
- passed by the user. There are three mantadory inputs and one optional input
- that is used only when this function is called by other functions and the
- printed messages should be supressed. The user usually doesn't have to use the
- variable called.
+    scan_y(scanner, y_axis_range, y_axis_num_scans; kwargs..)
 
- Input: 
-     hydrophone: the structure for all controller connections.
-        axis_range: A 1x2 or 1x1 array that contains the start and end point
-                 of the desired range in the y-direction.
-          num_points: The number of points the user desires to record along the
-                 y-axis.
-         called: This variable is either one or zero and is used to turn
-                 off user notifications when another function calls this
-                 one. User usually won't have to use this variable.
+This function moves along the y axis and grabs data based on a fixed
+increment passed by the user. 
 
- Output:
-   wave_info_y: A structure that contains the data that traces num_points of
-                waveforms and the coordinates travelled. The waveforms are
-                stored under wave_info_y.wave_form and the coordinates 
-                travelled is stored under wave_info_x.coordinates. The
-                coordinates are the (x, y, z) coordinates along the path
-                that the function took.
+# Arguments
+- `scanner`: the structure for all controller connections.
+- `y_axis_range::Array`: Contains the start and end point
+                         of the desired range in the
+                         y-direction.
+                         (Must be 1 or 2 elements long)
+- `y_axis_num_scans::Int`: The number of points/scans the user desires 
+                           to record along the y-axis.
+# Keywords
+- `verbose`::Bool: Optional, defaults to: true
 
- Example:
- scan_range = [0 1]; num_points = 5;
- wave_info_x = ky_hydro_scan_y(settings, scan_range, num_points);
+# Returns
+- Waveinfo_1D
+
+# Example
+```
+xyz_handle = initialize(ThorlabsLTS150)
+scope_handle = initialize(Scope350MHz)
+# Sample size 100, read from scope on channel 1
+scan_handle = IntensityScan(xyz_handle, scope_handle, 100, 1)
+
+scan_range_y = [0 2]
+num_points_y =10
+
+wave_info_y = scan_y(scan_handle, scan_range_y, num_points_y)
+```
 """
 function scan_y(
-    hydro, y_range, num_points;
+    scanner, y_range, num_points;
     verbose=true, 
 )
     scan_single_axis(
-        hydro, y_range, num_points, move_y_abs;
+        scanner, y_range, num_points, move_y_abs;
         verbose=verbose, 
     )
 end
 
 """
- This function moves along the z axis and grabs data based on a fixed
- increment passed by the user. 
+    scan_z(scan_handle, z_scan_range, num_scans)
+This function moves along the z axis and grabs data based on a fixed
+increment passed by the user. 
 
- There are three mandatory inputs and one optional keyword.
-
- when this function is called by other functions and 
- should be supressed.
-
- # Arguments
+# Arguments
+- `scanner`: the structure for all controller connections.
+- `z_axis_range::Array`: Contains the start and end point
+                         of the desired range in the
+                         z-direction.
+                         (Must be 1 or 2 elements long)
+- `z_axis_num_scans::Int`: The number of points/scans the user desires 
+                           to record along the z-axis.
  # Keywords
  - `verbose`: Default true. When false the printed messages should be suppressed (normally used when this function is called by another function)
  # Returns
   - `Waveinfo_1D`
-A structure that contains the data that traces the number of
-waveform scans and the coordinates travelled. The waveforms are
-stored under wave_info_x.wave_form and the coordinates 
-travelled is stored under wave_info_x.coordinates. The
-coordinates are the (x, y, z) coordinates along the path
-that the function took.
 
- Input: 
-     hydrophone: the structure for all controller connections.
-        axis_range: A 1x2 or 1x1 array that contains the start and end point
-                 of the desired range in the z-direction.
-          num_points: The number of points the user desires to record along the
-                 z-axis.
-         called: This variable is either one or zero and is used to turn
-                 off user notifications when another function calls this
-                 one. User usually won't have to use this variable.
-
- # Example
+# Example
+```
 xyz_handle = initialize(ThorlabsLTS150)
 scope_handle = initialize(Scope350MHz)
 # Sample size 100, read from scope on channel 1
@@ -122,27 +111,28 @@ scan_handle = IntensityScan(xyz_handle, scope_handle, 100, 1)
 scan_range = [0, 1]
 num_scans = 5
 wave_info_z = scan_z(scan_handle, scan_range, num_scans)
+``` 
 """
 function scan_z(
-    hydro, z_range, num_points;
+    scanner, z_range, num_points;
     verbose=true, 
 )
     scan_single_axis(
-        hydro, z_range, num_points, move_z_abs;
+        scanner, z_range, num_points, move_z_abs;
         verbose=verbose, 
     )
 end
 
 
 function scan_single_axis(
-    hydro, axis_range, num_scans, move_func;
+    scanner, axis_range, num_scans, move_func;
     verbose=true, 
 )
     start_time = time()
     axis = get_axis(move_func)
-    check_xyz_limits(hydro, axis, axis_range)
+    check_xyz_limits(scanner, axis, axis_range)
     positions = create_positions_vector(axis_range, num_scans)
-    wave_info = Waveinfo_1D(hydro.sample_size, num_scans)
+    wave_info = Waveinfo_1D(scanner.sample_size, num_scans)
 
     for scan_index in 1:num_scans
         if verbose 
@@ -154,14 +144,14 @@ function scan_single_axis(
 
         first_pass = scan_index == 1
 
-        move_func(hydro.xyz, positions[scan_index])
+        move_func(scanner.xyz, positions[scan_index])
 
         # TODO: Pausing
         
-        data = get_data(hydro.scope, hydro.channel)
+        data = get_data(scanner.scope, scanner.channel)
 
-        if data.info.num_points != hydro.sample_size
-            error("Scope sample size is different from hydrophone")
+        if data.info.num_points != scanner.sample_size
+            error("Scope sample size is different from scanner")
         end
 
         # TODO: if remove_amount_data != 0 trim beginning and end of data
@@ -171,7 +161,7 @@ function scan_single_axis(
         end
 
         wave_info.waveform[:, scan_index] = data.volts
-        wave_info.coordinates[scan_index] = pos_xyz(hydro.xyz)
+        wave_info.coordinates[scan_index] = pos_xyz(scanner.xyz)
 
 
         if verbose
@@ -219,14 +209,14 @@ function create_positions_vector(axis_range, num_points)
 end
 
 function check_xyz_limits(
-    hydro::IntensityScan, axis::AbstractString, axis_range::Array
+    scanner::IntensityScan, axis::AbstractString, axis_range::Array
 )
     if axis == "x"
-        check_xyz_limits(hydro.xyz.get_limits_x, axis_range)
+        check_xyz_limits(scanner.xyz.get_limits_x, axis_range)
     elseif axis == "y"
-        check_xyz_limits(hydro.xyz.get_limits_y, axis_range)
+        check_xyz_limits(scanner.xyz.get_limits_y, axis_range)
     elseif axis == "z"
-        check_xyz_limits(hydro.xyz.get_limits_z, axis_range)
+        check_xyz_limits(scanner.xyz.get_limits_z, axis_range)
     else
         error("Single axis must be x, y or z not: $axis")
     end
