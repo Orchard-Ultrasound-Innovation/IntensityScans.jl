@@ -1,3 +1,43 @@
+"""
+    scan_xy(hydro, x_axis_range, x_axis_num_scans, y_axis_range, y_axis_num_scans; kwargs..)
+
+This function grabs data along the xy-plane. It holds the y-position
+constant and moves along the x axis until it reaches the last x point 
+and then changes the y-position and repeats. There are five mandatory 
+inputs and one optional input that is used only when this function is
+called by other functions and the printed messages should be 
+surpressed. The user usually doesn't have to use the variable called.
+
+# Arguments
+- `hydro`: the structure for all controller connections.
+- `x_axis_range::Array`: An array that contains the start and end point
+                  of the desired range in the x-direction.
+                  (Must be 1 or 2 elements long)
+- `x_axis_num_scans::Int`: The number of points/scans the user desires to
+                      record along the x-axis.
+- `y_axis_range::Array`: Contains the start and end point
+                         of the desired range in the
+                         y-direction.
+                         (Must be 1 or 2 elements long)
+- `y_axis_num_scans::Int`: The number of points/scans the user desires 
+                           to record along the y-axis.
+# Keywords
+- `verbose`::Bool: Optional, defaults to: true
+
+# Returns
+- Waveinfo
+
+# Example
+```
+hydro = IntensityScan(initialize(lts150), initialize(Scope350MHz), 1, 100)
+scan_range_x = [0 2]; scan_range_y = [0 2];
+num_points_x = 5; num_points_y =10;
+
+wave_info_xz = scan_xy(
+    hydro, scan_range_x, num_points_x, scan_range_y, num_points_y
+)
+```
+"""
 function scan_xy(
     hydro,
     x_axis_range,
@@ -14,6 +54,48 @@ function scan_xy(
         y_axis_range,
         y_axis_num_scans,
         move_y_abs;
+        verbose=verbose,
+    )
+    
+end
+
+function scan_xz(
+    hydro,
+    x_axis_range,
+    x_axis_num_scans,
+    z_axis_range,
+    z_axis_num_scans;
+    verbose=true,
+)
+    scan_double_axis(
+        hydro,
+        x_axis_range,
+        x_axis_num_scans,
+        scan_x,
+        z_axis_range,
+        z_axis_num_scans,
+        move_z_abs;
+        verbose=verbose,
+    )
+    
+end
+
+function scan_yz(
+    hydro,
+    y_axis_range,
+    y_axis_num_scans,
+    z_axis_range,
+    z_axis_num_scans;
+    verbose=true,
+)
+    scan_double_axis(
+        hydro,
+        y_axis_range,
+        y_axis_num_scans,
+        scan_y,
+        z_axis_range,
+        z_axis_num_scans,
+        move_z_abs;
         verbose=verbose,
     )
     
@@ -56,7 +138,7 @@ function scan_double_axis(
             hydro, first_axis_range, first_axis_num_scans;
             verbose=false, 
         )
-        wave_info.wave_form[:, :, scan_index] =
+        wave_info.waveform[:, :, scan_index] =
             wave_info_first_axis.wave_info
         wave_info.coordinates[:, :, scan_index] =
             wave_info_first_axis.coordinates

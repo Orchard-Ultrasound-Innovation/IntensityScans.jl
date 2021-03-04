@@ -25,39 +25,37 @@ hydrophone = IntensityScan(lts, scope, 100, 1)
 ```
 """
 struct IntensityScan 
-    xyz
-    scope
-    channel
-    sample_size
+    xyz::ThorlabsLTS150
+    scope::Instr{T} where T <: Oscilloscope
+    channel::Int64
+    sample_size::Int64
 end
 
 mutable struct Waveinfo
-    info::Union{Waveform_info, Nothing}
-    time::Union{Array{Float64, 1}, Nothing}
-    waveinfo::Union{Array{Float64}, Nothing}
-    coordinates::Union{Array{Tuple{Real, Real, Real}}, Nothing}
-end
-
-Waveinfo() = Waveinfo(nothing, nothing, nothing, nothing, nothing)
-
-function Waveinfo(
-    sample_size_of_single_scan,
-    number_of_scans_first_axis,
-    number_of_scans_second_axis = 1,
-)
-    wave_info = Waveinfo()
-    wave_info.wave_form = zeros(
+    info::Waveform_info
+    time::Array{Float64, 1}
+    waveform::Array{Float64}
+    coordinates::Array{Tuple{Real, Real, Real}}
+    function Waveinfo(
         sample_size_of_single_scan,
         number_of_scans_first_axis,
-        number_of_scans_second_axis
+        number_of_scans_second_axis = 1,
     )
-    wave_info.coordinates = zeros(
-        3, # number of coordinates to be stored. One for each axis: xyz
-        number_of_scans_first_axis,
-        number_of_scans_second_axis
-    )
-    return wave_info
+        wave_info = new()
+        wave_info.waveform = zeros(
+            sample_size_of_single_scan,
+            number_of_scans_first_axis,
+            number_of_scans_second_axis
+        )
+        wave_info.coordinates = zeros(
+            3, # number of coordinates to be stored. One for each axis: xyz
+            number_of_scans_first_axis,
+            number_of_scans_second_axis
+        )
+        return wave_info
+    end
 end
+
 
 
 """
@@ -230,7 +228,7 @@ function scan_single_axis(
             wave_info.info = data.info
         end
 
-        wave_info.wave_form[:, scan_index] = data.volts
+        wave_info.waveform[:, scan_index] = data.volts
         wave_info.coordinates[scan_index] = pos_xyz(hydro.xyz)
 
 
