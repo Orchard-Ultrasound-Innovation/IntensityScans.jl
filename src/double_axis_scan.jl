@@ -25,7 +25,7 @@ surpressed. The user usually doesn't have to use the variable called.
 - `verbose`::Bool: Optional, defaults to: true
 
 # Returns
-- Waveinfo
+- Waveinfo_2D
 
 # Example
 ```
@@ -119,7 +119,7 @@ function scan_double_axis(
         second_axis_range,
         second_axis_num_scans,
     )
-    wave_info = Waveinfo(
+    wave_info = Waveinfo_2D(
         hydro.sample_size, 
         first_axis_num_scans, 
         second_axis_num_scans; 

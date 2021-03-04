@@ -95,7 +95,7 @@ end
  # Keywords
  - `verbose`: Default true. When false the printed messages should be suppressed (normally used when this function is called by another function)
  # Returns
-  - `Waveinfo`
+  - `Waveinfo_1D`
 A structure that contains the data that traces the number of
 waveform scans and the coordinates travelled. The waveforms are
 stored under wave_info_x.wave_form and the coordinates 
@@ -142,7 +142,7 @@ function scan_single_axis(
     axis = get_axis(move_func)
     check_xyz_limits(hydro, axis, axis_range)
     positions = create_positions_vector(axis_range, num_scans)
-    wave_info = Waveinfo(hydro.sample_size, num_scans)
+    wave_info = Waveinfo_1D(hydro.sample_size, num_scans)
 
     for scan_index in 1:num_scans
         if verbose 
