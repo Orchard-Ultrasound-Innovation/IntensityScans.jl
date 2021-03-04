@@ -1,64 +1,6 @@
 using Dates
 
 """
-This function initializes connections with the xyz stage and the
-Oscilloscope. The program does this by calling ky_xyz_init and
-ky_scope_rs_init. This function takes 6 input arguements and 4 of those
-are mandatory. If there is no previous structure settings from previous
-initializations (if this is the first time the user calls this function),
-leave settings blank. Also, the default stage will be 'new' if not
-entered. This stage is the newer stage located in the larger lab room.
-
-Input:
-       xyz: The handle of desired xyz stage
-     scope: Handle of desired scope
-   channel: This input decides which channel the scope will read from.
-sample_size: The amount of samples desired to be taken.
-
-
-Ex.
-```
-lts = initialize(ThorlabsLTS150)
-scope = initialize(Scope350MHz)
-# Sample size 100, read from scope on channel 1
-hydrophone = IntensityScan(lts, scope, 100, 1)
-```
-"""
-struct IntensityScan 
-    xyz::ThorlabsLTS150
-    scope::Instr{T} where T <: Oscilloscope
-    channel::Int64
-    sample_size::Int64
-end
-
-mutable struct Waveinfo
-    info::Waveform_info
-    time::Array{Float64, 1}
-    waveform::Array{Float64}
-    coordinates::Array{Tuple{Real, Real, Real}}
-    function Waveinfo(
-        sample_size_of_single_scan,
-        number_of_scans_first_axis,
-        number_of_scans_second_axis = 1,
-    )
-        wave_info = new()
-        wave_info.waveform = zeros(
-            sample_size_of_single_scan,
-            number_of_scans_first_axis,
-            number_of_scans_second_axis
-        )
-        wave_info.coordinates = zeros(
-            3, # number of coordinates to be stored. One for each axis: xyz
-            number_of_scans_first_axis,
-            number_of_scans_second_axis
-        )
-        return wave_info
-    end
-end
-
-
-
-"""
  wave_info_x = ky_hydro_scan_x(settings, axis_range, num_points, called)
 
  This function moves along the x axis and grabs data based on a fixed
