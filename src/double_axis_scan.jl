@@ -1,5 +1,5 @@
 """
-    scan_xy(hydro, x_axis_range, x_axis_num_scans, y_axis_range, y_axis_num_scans; kwargs..)
+    scan_xy(scanner, x_axis_range, x_axis_num_scans, y_axis_range, y_axis_num_scans; kwargs..)
 
 This function grabs data along the xy-plane. It holds the y-position
 constant and moves along the x axis until it reaches the last x point 
@@ -9,12 +9,12 @@ called by other functions and the printed messages should be
 surpressed. The user usually doesn't have to use the variable called.
 
 # Arguments
-- `hydro`: the structure for all controller connections.
+- `scanner`: the structure for all controller connections.
 - `x_axis_range::Array`: An array that contains the start and end point
-                  of the desired range in the x-direction.
-                  (Must be 1 or 2 elements long)
+                         of the desired range in the x-direction.
+                         (Must be 1 or 2 elements long)
 - `x_axis_num_scans::Int`: The number of points/scans the user desires to
-                      record along the x-axis.
+                           record along the x-axis.
 - `y_axis_range::Array`: Contains the start and end point
                          of the desired range in the
                          y-direction.
@@ -25,21 +25,21 @@ surpressed. The user usually doesn't have to use the variable called.
 - `verbose`::Bool: Optional, defaults to: true
 
 # Returns
-- Waveinfo
+- Waveinfo_2D
 
 # Example
 ```
-hydro = IntensityScan(initialize(lts150), initialize(Scope350MHz), 1, 100)
+scanner = IntensityScan(initialize(lts150), initialize(Scope350MHz), 1, 100)
 scan_range_x = [0 2]; scan_range_y = [0 2];
 num_points_x = 5; num_points_y =10;
 
 wave_info_xz = scan_xy(
-    hydro, scan_range_x, num_points_x, scan_range_y, num_points_y
+    scanner, scan_range_x, num_points_x, scan_range_y, num_points_y
 )
 ```
 """
 function scan_xy(
-    hydro,
+    scanner,
     x_axis_range,
     x_axis_num_scans,
     y_axis_range,
@@ -47,7 +47,7 @@ function scan_xy(
     verbose=true,
 )
     scan_double_axis(
-        hydro,
+        scanner,
         x_axis_range,
         x_axis_num_scans,
         scan_x,
@@ -60,7 +60,7 @@ function scan_xy(
 end
 
 function scan_xz(
-    hydro,
+    scanner,
     x_axis_range,
     x_axis_num_scans,
     z_axis_range,
@@ -68,7 +68,7 @@ function scan_xz(
     verbose=true,
 )
     scan_double_axis(
-        hydro,
+        scanner,
         x_axis_range,
         x_axis_num_scans,
         scan_x,
@@ -81,7 +81,7 @@ function scan_xz(
 end
 
 function scan_yz(
-    hydro,
+    scanner,
     y_axis_range,
     y_axis_num_scans,
     z_axis_range,
@@ -89,7 +89,7 @@ function scan_yz(
     verbose=true,
 )
     scan_double_axis(
-        hydro,
+        scanner,
         y_axis_range,
         y_axis_num_scans,
         scan_y,
@@ -101,8 +101,9 @@ function scan_yz(
     
 end
 
+
 function scan_double_axis(
-    hydro::IntensityScan,
+    scanner::IntensityScan,
     first_axis_range,
     first_axis_num_scans,
     scan_first_axis::Function,
@@ -114,13 +115,13 @@ function scan_double_axis(
     start_time = time()    
     first_axis = get_axis(scan_first_axis)
     second_axis = get_axis(move_second_axis)
-    check_xyz_limits(hydro, second_axis, second_axis_range)
+    check_xyz_limits(scanner, second_axis, second_axis_range)
     positions = create_positions_vector(
         second_axis_range,
         second_axis_num_scans,
     )
-    wave_info = Waveinfo(
-        hydro.sample_size, 
+    wave_info = Waveinfo_2D(
+        scanner.sample_size, 
         first_axis_num_scans, 
         second_axis_num_scans; 
     )
@@ -132,17 +133,16 @@ function scan_double_axis(
         end
         first_pass = scan_index == 1
 
-        move_second_axis(hydro.xyz, positions[scan_index])
+        move_second_axis(scanner.xyz, positions[scan_index])
 
         wave_info_first_axis = scan_first_axis(
-            hydro, first_axis_range, first_axis_num_scans;
+            scanner, first_axis_range, first_axis_num_scans;
             verbose=false, 
         )
         wave_info.waveform[:, :, scan_index] =
             wave_info_first_axis.wave_info
         wave_info.coordinates[:, :, scan_index] =
             wave_info_first_axis.coordinates
-        # TODO: Ask. Do we want to do this?
         if first_pass
             wave_info.info = wave_info_first_axis.info
         end
