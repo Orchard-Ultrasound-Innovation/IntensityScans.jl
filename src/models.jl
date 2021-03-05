@@ -21,25 +21,25 @@ struct IntensityScan
     sample_size::Int64
 end
 
-mutable struct Waveinfo_1D
-    info::TcpInstruments.Waveform_info
+mutable struct Scan_1D
+    scope_info::TcpInstruments.Waveform_info
     time::Array{Float64, 1}
-    waveform::Array{Float64, 2}
+    data::Array{Float64, 2}
     coordinates::Array{Tuple{Float64, Float64, Float64}, 1}
-    function Waveinfo_1D(
-        sample_size_of_single_scan,
-        number_of_scans_first_axis,
+    function Scan_1D(
+        samples_per_waveform,
+        number_of_scanning_points_first_axis,
     )
-        wave_info = new()
-        wave_info.waveform = zeros(
-            sample_size_of_single_scan,
-            number_of_scans_first_axis,
+        scan = new()
+        scan.data = zeros(
+            samples_per_waveform,
+            number_of_scanning_points_first_axis,
         )
-        wave_info.coordinates = zeros(
+        scan.coordinates = zeros(
             1, # number of coordinates. One for each axis: xyz
-            number_of_scans_first_axis,
+            number_of_scanning_points_first_axis,
         )
-        return wave_info
+        return scan
     end
 end
 
