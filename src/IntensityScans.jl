@@ -1,5 +1,8 @@
 module IntensityScans
 
+using TcpInstruments
+using ThorlabsLTStage
+
 include("util.jl")
 
 include("models.jl")
