@@ -33,7 +33,7 @@ mutable struct Waveinfo_1D
     info::TcpInstruments.Waveform_info
     time::Array{Float64, 1}
     waveform::Array{Float64, 2}
-    coordinates::Array{Tuple{Float64, Float64, Float64}, 2}
+    coordinates::Array{Tuple{Float64, Float64, Float64}, 1}
     function Waveinfo(
         sample_size_of_single_scan,
         number_of_scans_first_axis,
@@ -44,7 +44,7 @@ mutable struct Waveinfo_1D
             number_of_scans_first_axis,
         )
         wave_info.coordinates = zeros(
-            3, # number of coordinates. One for each axis: xyz
+            1, # number of coordinates. One for each axis: xyz
             number_of_scans_first_axis,
         )
         return wave_info
@@ -55,7 +55,7 @@ mutable struct Waveinfo_2D
     info::TcpInstruments.Waveform_info
     time::Array{Float64, 1}
     waveform::Array{Float64, 3}
-    coordinates::Array{Tuple{Float64, Float64, Float64}, 3}
+    coordinates::Array{Tuple{Float64, Float64, Float64}, 2}
     function Waveinfo(
         sample_size_of_single_scan,
         number_of_scans_first_axis,
@@ -68,7 +68,7 @@ mutable struct Waveinfo_2D
             number_of_scans_second_axis
         )
         wave_info.coordinates = zeros(
-            3, # number of coordinates. One for each axis: xyz
+            2, # number of coordinates. One for each axis: xyz
             number_of_scans_first_axis,
             number_of_scans_second_axis
         )
@@ -80,7 +80,7 @@ mutable struct Waveinfo_3D
     info::TcpInstruments.Waveform_info
     time::Array{Float64, 1}
     waveform::Array{Float64, 4}
-    coordinates::Array{Tuple{Float64, Float64, Float64}, 4}
+    coordinates::Array{Tuple{Float64, Float64, Float64}, 3}
     function Waveinfo(
         sample_size_of_single_scan,
         number_of_scans_first_axis,
@@ -97,7 +97,7 @@ mutable struct Waveinfo_3D
         wave_info.coordinates = zeros(
             3, # number of coordinates. One for each axis: xyz
             number_of_scans_first_axis,
-            number_of_scans_second_axis
+            number_of_scans_second_axis,
             number_of_scans_third_axis,
         )
         return wave_info
