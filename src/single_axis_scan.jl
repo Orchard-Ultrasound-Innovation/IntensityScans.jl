@@ -16,7 +16,7 @@ Move along the x axis and grab data based on a fixed increment.
 - `verbose`::Bool: Optional, defaults to: true
 
 # Returns
-- Waveinfo_1D
+- Scan1D
 
 # Example
 ```
@@ -58,7 +58,7 @@ increment passed by the user.
 - `verbose`::Bool: Optional, defaults to: true
 
 # Returns
-- Waveinfo_1D
+- Scan1D
 
 # Example
 ```
@@ -99,7 +99,7 @@ increment passed by the user.
  # Keywords
  - `verbose`: Default true. When false the printed messages should be suppressed (normally used when this function is called by another function)
  # Returns
-  - `Waveinfo_1D`
+  - `Scan1D`
 
 # Example
 ```
@@ -132,7 +132,7 @@ function scan_single_axis(
     axis = get_axis(move_func)
     check_xyz_limits(scanner, axis, axis_range)
     positions = create_positions_vector(axis_range, num_scans)
-    wave_info = Waveinfo_1D(scanner.sample_size, num_scans)
+    wave_info = Scan1D(scanner.sample_size, num_scans)
 
     for scan_index in 1:num_scans
         if verbose 

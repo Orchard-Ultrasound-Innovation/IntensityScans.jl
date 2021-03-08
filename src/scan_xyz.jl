@@ -55,7 +55,7 @@ function scan_xyz(
     check_xyz_limits(scanner, "y", y_range)
     check_xyz_limits(scanner, "z", z_range)
     positions = create_positions_vector(z_range, z_num_scans)
-    wave_info = Waveinfo_3D(
+    wave_info = Scan3D(
         scanner.sample_size, 
         x_num_scans, 
         y_num_scans, 

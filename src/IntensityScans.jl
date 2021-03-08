@@ -4,6 +4,11 @@ using TcpInstruments
 using ThorlabsLTStage
 
 export
+    IntensityScan,
+    Scan1D,
+    Scan2D,
+    Scan3D,
+
     scan_x,
     scan_y,
     scan_z,
