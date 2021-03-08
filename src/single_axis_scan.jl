@@ -196,8 +196,7 @@ function create_positions_vector(axis_range, num_points)
     if length(axis_range) == 1
         if num_points != 1
             error(
-                "Can't measure multiple points when axis_range has one"* 
-                " position"
+                "Can't measure multiple points when axis_range has one position"
             )
         end
         return axis_range
@@ -224,7 +223,7 @@ end
 
 function check_xyz_limits(limits, axis_range::Array)
     low_limit, high_limit = limits
-    if !axis_range[begin] in low_limit:high_limit || !axis_range[end] in low_limit:high_limit
+    if !(axis_range[begin] in low_limit:high_limit) || !(axis_range[end] in low_limit:high_limit)
         error("scan range is outside current limits of the xyz stage")
     end
 end
