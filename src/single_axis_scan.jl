@@ -212,18 +212,18 @@ function check_xyz_limits(
     scanner::IntensityScan, axis::AbstractString, axis_range::Array
 )
     if axis == "x"
-        check_xyz_limits(scanner.xyz.get_limits_x, axis_range)
+    check_xyz_limits(get_limits_x(scanner.xyz), axis_range)
     elseif axis == "y"
-        check_xyz_limits(scanner.xyz.get_limits_y, axis_range)
+    check_xyz_limits(get_limits_y(scanner.xyz), axis_range)
     elseif axis == "z"
-        check_xyz_limits(scanner.xyz.get_limits_z, axis_range)
+    check_xyz_limits(get_limits_z(scanner.xyz), axis_range)
     else
         error("Single axis must be x, y or z not: $axis")
     end
 end
 
-function check_xyz_limits(get_limits::Function, axis_range::Array)
-    low_limit, high_limit = get_limits()
+function check_xyz_limits(limits, axis_range::Array)
+    low_limit, high_limit = limits
     if !axis_range[begin] in low_limit:high_limit || !axis_range[end] in low_limit:high_limit
         error("scan range is outside current limits of the xyz stage")
     end
