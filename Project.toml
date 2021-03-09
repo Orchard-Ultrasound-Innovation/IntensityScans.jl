@@ -10,6 +10,7 @@ TcpInstruments = "aaee30c5-7b57-4441-b61a-ab7186f11903"
 ThorlabsLTStage = "c851c8d9-0c3b-43db-9ff0-525c27d20a67"
 
 [compat]
+InstrumentConfig = "0.2"
 julia = "1"
 
 [extras]
