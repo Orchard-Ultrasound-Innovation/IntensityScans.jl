@@ -151,7 +151,7 @@ function scan_single_axis(
         data = get_data(scanner.scope, scanner.channel)
 
         if data.info.num_points != scanner.sample_size
-            error("Scope sample size is different from scanner")
+            error("Scope sample size: $(data.info.num_points) != scanner: $(scanner.sample_size)")
         end
 
         # TODO: if remove_amount_data != 0 trim beginning and end of data
