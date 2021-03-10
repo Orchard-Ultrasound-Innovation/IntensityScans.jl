@@ -48,7 +48,8 @@ function scan_xyz(
     y_range,
     y_num_scans,
     z_range,
-    z_num_scans,
+    z_num_scans;
+    verbose=true
 )
     start_time = time()    
     check_xyz_limits(scanner, "x", x_range)
