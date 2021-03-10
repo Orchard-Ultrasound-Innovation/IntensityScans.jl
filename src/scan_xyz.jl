@@ -79,7 +79,7 @@ function scan_xyz(
             y_num_scans,
             verbose=false, 
         )
-        wave_info.waveform[:, :, :, scan_index] =
+        wave_info.data[:, :, :, scan_index] =
             wave_info_xy.wave_info
         wave_info.coordinates[:, :, :, scan_index] =
             wave_info_xy.coordinates

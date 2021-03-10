@@ -46,7 +46,7 @@ end
 mutable struct Scan2D
     info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
-    waveform::Array{Float64, 3}
+    data::Array{Float64, 3}
     coordinates::Array{Float64, 3}
     function Scan2D(
         sample_size_of_single_scan,
@@ -54,7 +54,7 @@ mutable struct Scan2D
         number_of_scans_second_axis,
     )
         wave_info = new()
-        wave_info.waveform = zeros(
+        wave_info.data = zeros(
             sample_size_of_single_scan,
             number_of_scans_first_axis,
             number_of_scans_second_axis
@@ -71,7 +71,7 @@ end
 mutable struct Scan3D
     info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
-    waveform::Array{Float64, 4}
+    data::Array{Float64, 4}
     coordinates::Array{Float64, 4}
     function Scan3D(
         sample_size_of_single_scan,
@@ -80,7 +80,7 @@ mutable struct Scan3D
         number_of_scans_third_axis,
     )
         wave_info = new()
-        wave_info.waveform = zeros(
+        wave_info.data = zeros(
             sample_size_of_single_scan,
             number_of_scans_first_axis,
             number_of_scans_second_axis,

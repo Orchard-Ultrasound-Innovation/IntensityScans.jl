@@ -139,7 +139,7 @@ function scan_double_axis(
             scanner, first_axis_range, first_axis_num_scans;
             verbose=false, 
         )
-        wave_info.waveform[:, :, scan_index] =
+        wave_info.data[:, :, scan_index] =
             wave_info_first_axis.wave_info
         wave_info.coordinates[:, :, scan_index] =
             wave_info_first_axis.coordinates
