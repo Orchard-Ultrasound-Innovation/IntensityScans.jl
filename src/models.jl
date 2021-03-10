@@ -44,7 +44,7 @@ mutable struct Scan1D
 end
 
 mutable struct Scan2D
-    scop_info::TcpInstruments.ScopeInfo
+    scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     waveform::Array{Float64, 3}
     coordinates::Array{Tuple{Float64, Float64, Float64}, 3}
