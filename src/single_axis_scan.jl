@@ -160,7 +160,7 @@ function scan_single_axis(
             wave_info.info = data.info
         end
 
-        wave_info.waveform[:, scan_index] = data.volts
+        wave_info.waveform[:, scan_index] = data.volt
         wave_info.coordinates[:, scan_index] = pos_xyz(scanner.xyz)
 
 
