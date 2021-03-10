@@ -6,11 +6,11 @@ DocMeta.setdocmeta!(IntensityScans, :DocTestSetup, :(using IntensityScans); recu
 makedocs(;
     modules=[IntensityScans],
     authors="Morten F. Rasmussen <10264458+mofii@users.noreply.github.com> and contributors",
-    repo="https://github.com/mofii/IntensityScans.jl/blob/{commit}{path}#{line}",
+    repo="https://github.com/Orchard-Ultrasound-Innovation/IntensityScans.jl/blob/{commit}{path}#{line}",
     sitename="IntensityScans.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://mofii.github.io/IntensityScans.jl",
+        canonical="https://Orchard-Ultrasound-Innovation.github.io/IntensityScans.jl",
         assets=String[],
     ),
     pages=[
@@ -19,5 +19,5 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/mofii/IntensityScans.jl",
+    repo="github.com/Orchard-Ultrasound-Innovation/IntensityScans.jl",
 )
