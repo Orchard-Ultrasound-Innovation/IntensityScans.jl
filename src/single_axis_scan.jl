@@ -28,7 +28,7 @@ scanner_handle = IntensityScan(xyz_handle, scope_handle, 100, 1)
 scan_range_x = [0, 2]
 num_points_x = 5
 
-wave_info_x = scan_x(scanner_handle, scan_range_x, num_points_x)
+scan_info_x = scan_x(scanner_handle, scan_range_x, num_points_x)
 ```
 """
 function scan_x(
@@ -70,7 +70,7 @@ scan_handle = IntensityScan(xyz_handle, scope_handle, 100, 1)
 scan_range_y = [0 2]
 num_points_y =10
 
-wave_info_y = scan_y(scan_handle, scan_range_y, num_points_y)
+scan_info_y = scan_y(scan_handle, scan_range_y, num_points_y)
 ```
 """
 function scan_y(
@@ -110,7 +110,7 @@ scan_handle = IntensityScan(xyz_handle, scope_handle, 100, 1)
 
 scan_range = [0, 1]
 num_scans = 5
-wave_info_z = scan_z(scan_handle, scan_range, num_scans)
+scan_info_z = scan_z(scan_handle, scan_range, num_scans)
 ``` 
 """
 function scan_z(
@@ -132,7 +132,7 @@ function scan_single_axis(
     axis = get_axis(move_func)
     check_xyz_limits(scanner, axis, axis_range)
     positions = create_positions_vector(axis_range, num_scans)
-    wave_info = Scan1D(scanner.sample_size, num_scans)
+    scan_info = Scan1D(scanner.sample_size, num_scans)
 
     for scan_index in 1:num_scans
         if verbose 
@@ -151,17 +151,17 @@ function scan_single_axis(
         data = get_data(scanner.scope, scanner.channel)
 
         if data.info.num_points != scanner.sample_size
-            error("Scope sample size: $(data.info.num_points) != scanner: $(scanner.sample_size)")
+            error("Scope sample size is different from scanner")
         end
 
         # TODO: if remove_amount_data != 0 trim beginning and end of data
 
         if first_pass
-            wave_info.info = data.info
+            scan_info.info = data.info
         end
 
-        wave_info.data[:, scan_index] = data.volt
-        wave_info.coordinates[:, scan_index] = pos_xyz(scanner.xyz)
+        scan_info.waveform[:, scan_index] = data.volts
+        scan_info.coordinates[:, scan_index] = pos_xyz(scanner.xyz)
 
 
         if verbose
@@ -188,14 +188,16 @@ function scan_single_axis(
     end
 
     # TODO: Plot
-    wave_info
+    scan_info
 
 end
 
 function create_positions_vector(axis_range, num_points)
     if length(axis_range) == 1
         if num_points != 1
-            error("Can't measure multiple points when axis_range has one position")
+            error(
+                "Can't measure multiple points when axis_range has one position"
+            )
         end
         return axis_range
     elseif length(axis_range) == 2
@@ -209,11 +211,11 @@ function check_xyz_limits(
     scanner::IntensityScan, axis::AbstractString, axis_range::Array
 )
     if axis == "x"
-    check_xyz_limits(get_limits_x(scanner.xyz), axis_range)
+        check_xyz_limits(get_limits_x(scanner.xyz), axis_range)
     elseif axis == "y"
-    check_xyz_limits(get_limits_y(scanner.xyz), axis_range)
+        check_xyz_limits(get_limits_y(scanner.xyz), axis_range)
     elseif axis == "z"
-    check_xyz_limits(get_limits_z(scanner.xyz), axis_range)
+        check_xyz_limits(get_limits_z(scanner.xyz), axis_range)
     else
         error("Single axis must be x, y or z not: $axis")
     end
@@ -221,10 +223,8 @@ end
 
 function check_xyz_limits(limits, axis_range::Array)
     low_limit, high_limit = limits
-    for range in axis_range
-        if range < low_limit || range > high_limit
-            error("Scan range ($range) is outside current limits of the xyz stage ($low_limit - $high_limit)")
-        end
+    if !(axis_range[begin] in low_limit:high_limit) || !(axis_range[end] in low_limit:high_limit)
+        error("scan range is outside current limits of the xyz stage")
     end
 end
 

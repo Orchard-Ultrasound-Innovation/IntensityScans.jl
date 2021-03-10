@@ -22,76 +22,76 @@ struct IntensityScan
 end
 
 mutable struct Scan1D
-    info::TcpInstruments.ScopeInfo
+    scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     data::Array{Float64, 2}
-    coordinates::Array{Float64, 2}
+    coordinates::Array{Tuple{Float64, Float64, Float64}, 2}
     function Scan1D(
         samples_per_waveform,
         number_of_scanning_points_first_axis,
     )
-        scan = new()
-        scan.data = zeros(
+        scan_info = new()
+        scan_info.data = zeros(
             samples_per_waveform,
             number_of_scanning_points_first_axis,
         )
-        scan.coordinates = zeros(
+        scan_info.coordinates = zeros(
             3, # number of coordinates. One for each axis: xyz
             number_of_scanning_points_first_axis,
         )
-        return scan
+        return scan_info
     end
 end
 
 mutable struct Scan2D
-    info::TcpInstruments.ScopeInfo
+    scop_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
-    data::Array{Float64, 3}
-    coordinates::Array{Float64, 3}
+    waveform::Array{Float64, 3}
+    coordinates::Array{Tuple{Float64, Float64, Float64}, 3}
     function Scan2D(
         sample_size_of_single_scan,
         number_of_scans_first_axis,
         number_of_scans_second_axis,
     )
-        wave_info = new()
-        wave_info.data = zeros(
+        scan_info = new()
+        scan_info.waveform = zeros(
             sample_size_of_single_scan,
             number_of_scans_first_axis,
             number_of_scans_second_axis
         )
-        wave_info.coordinates = zeros(
+        scan_info.coordinates = zeros(
             3, # number of coordinates. One for each axis: xyz
             number_of_scans_first_axis,
             number_of_scans_second_axis
         )
-        return wave_info
+        return scan_info
     end
 end
 
 mutable struct Scan3D
-    info::TcpInstruments.ScopeInfo
+    scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
-    data::Array{Float64, 4}
-    coordinates::Array{Float64, 4}
+    waveform::Array{Float64, 4}
+    coordinates::Array{Tuple{Float64, Float64, Float64}, 4}
     function Scan3D(
         sample_size_of_single_scan,
         number_of_scans_first_axis,
         number_of_scans_second_axis,
         number_of_scans_third_axis,
     )
-        wave_info = new()
-        wave_info.data = zeros(
+        scan_info = new()
+        scan_info.waveform = zeros(
             sample_size_of_single_scan,
             number_of_scans_first_axis,
             number_of_scans_second_axis,
             number_of_scans_third_axis,
         )
-        wave_info.coordinates = zeros(
+        scan_info.coordinates = zeros(
             3, # number of coordinates. One for each axis: xyz
             number_of_scans_first_axis,
             number_of_scans_second_axis,
             number_of_scans_third_axis,
         )
-        return wave_info
+        return scan_info
     end
 end
