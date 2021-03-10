@@ -1,3 +1,4 @@
+using StaticArrays
 """
 Input:
        xyz: The handle of desired xyz stage
@@ -25,17 +26,17 @@ struct Scan1D
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     data::Array{Float64, 2}
-    coordinates::Array{Tuple{Float64, Float64, Float64}, 2}
+    coordinates::Array{SVector{3, Float64}, 1}
     function Scan1D(
         samples_per_waveform,
         number_of_scanning_points_first_axis,
     )
         scan_info = new()
-        scan_info.data = zeros(
+        scan_info.data = @SArrays zeros(
             samples_per_waveform,
             number_of_scanning_points_first_axis,
         )
-        scan_info.coordinates = zeros(
+        scan_info.coordinates = @SArrays zeros(
             3, # number of coordinates. One for each axis: xyz
             number_of_scanning_points_first_axis,
         )
