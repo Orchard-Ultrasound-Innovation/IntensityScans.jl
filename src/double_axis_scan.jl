@@ -140,7 +140,7 @@ function scan_double_axis(
             verbose=false, 
         )
         wave_info.data[:, :, scan_index] =
-            wave_info_first_axis.wave_info
+            wave_info_first_axis.info
         wave_info.coordinates[:, :, scan_index] =
             wave_info_first_axis.coordinates
         if first_pass
