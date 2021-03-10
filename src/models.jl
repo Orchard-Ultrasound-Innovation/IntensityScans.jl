@@ -22,7 +22,7 @@ struct IntensityScan
 end
 
 mutable struct Scan1D
-    scope_info::TcpInstruments.ScopeInfo
+    info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     data::Array{Float64, 2}
     coordinates::Array{Float64, 2}
