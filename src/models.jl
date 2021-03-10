@@ -21,7 +21,7 @@ struct IntensityScan
     sample_size::Int64
 end
 
-mutable struct Scan1D
+struct Scan1D
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     data::Array{Float64, 2}
@@ -43,7 +43,7 @@ mutable struct Scan1D
     end
 end
 
-mutable struct Scan2D
+struct Scan2D
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     waveform::Array{Float64, 3}
@@ -68,7 +68,7 @@ mutable struct Scan2D
     end
 end
 
-mutable struct Scan3D
+struct Scan3D
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     waveform::Array{Float64, 4}
