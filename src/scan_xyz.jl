@@ -80,7 +80,7 @@ function scan_xyz(
             verbose=false, 
         )
         wave_info.data[:, :, :, scan_index] =
-            wave_info_xy.wave_info
+            wave_info_xy.data
         wave_info.coordinates[:, :, :, scan_index] =
             wave_info_xy.coordinates
         if first_pass
