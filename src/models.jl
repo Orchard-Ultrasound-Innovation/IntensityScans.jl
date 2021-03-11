@@ -24,8 +24,8 @@ end
 struct Scan1D
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
-    data::Array{Float64, 2}
-    coordinates::Array{Tuple{Float64, Float64, Float64}, 2}
+    waveform::Array{Float64, 2}
+    coordinates::Array{Float64, 2}
     function Scan1D(
         samples_per_waveform,
         number_of_scanning_points_first_axis,
@@ -47,7 +47,7 @@ struct Scan2D
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     waveform::Array{Float64, 3}
-    coordinates::Array{Tuple{Float64, Float64, Float64}, 3}
+    coordinates::Array{Float64, 3}
     function Scan2D(
         sample_size_of_single_scan,
         number_of_scans_first_axis,
@@ -72,7 +72,7 @@ struct Scan3D
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     waveform::Array{Float64, 4}
-    coordinates::Array{Tuple{Float64, Float64, Float64}, 4}
+    coordinates::Array{Float64, 4}
     function Scan3D(
         sample_size_of_single_scan,
         number_of_scans_first_axis,

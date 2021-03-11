@@ -224,9 +224,9 @@ end
 function check_xyz_limits(limits, axis_range::Array)
     low_limit, high_limit = limits
     for range in axis_range
-￼        if range < low_limit || range > high_limit
-￼            error("Scan range ($range) is outside current limits of the xyz stage ($low_limit - $high_limit)")
-￼        end
+        if range < low_limit || range > high_limit
+            error("Scan range ($range) is outside current limits of the xyz stage ($low_limit - $high_limit)")
+        end
     end
 end
 
