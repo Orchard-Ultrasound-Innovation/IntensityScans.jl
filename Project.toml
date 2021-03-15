@@ -1,7 +1,7 @@
 name = "IntensityScans"
 uuid = "6cf45cad-7870-4d4d-b567-e05cd8632aa3"
 authors = ["Esti Gajda", "Morten F. Rasmussen <10264458+mofii@users.noreply.github.com> and contributors"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
