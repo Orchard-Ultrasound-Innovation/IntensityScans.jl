@@ -11,7 +11,7 @@ ThorlabsLTStage = "c851c8d9-0c3b-43db-9ff0-525c27d20a67"
 
 [compat]
 InstrumentConfig = "0.2"
-TcpInstruments = "0.3"
+TcpInstruments = "0.3, 0.4"
 ThorlabsLTStage = "0.1"
 julia = "1"
 
