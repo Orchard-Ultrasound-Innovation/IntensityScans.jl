@@ -159,11 +159,5 @@ function scan_double_axis(
         end
     end
 
-    # TODO: Save data to file
-    if verbose
-        @info "Please implement Saving to file"
-    end
-
-    # TODO: Plot
     wave_info
 end

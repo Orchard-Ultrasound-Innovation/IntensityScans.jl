@@ -142,7 +142,6 @@ function scan_single_axis(
             """
         end
         move_func(scanner.xyz, positions[scan_index])
-        # TODO: Pausing
         data = get_data(scanner.scope, scanner.channel)
 
         if scan_index == 1
@@ -176,12 +175,6 @@ function scan_single_axis(
         """
     end
 
-    # TODO: Save data to file
-    if verbose
-        @info "Saving to file"
-    end
-
-    # TODO: Plot
     scan_info
 
 end
