@@ -31,7 +31,7 @@ struct Scan1D
         number_of_scanning_points_first_axis,
     )
         scan_info = new()
-        scan_info.data = zeros(
+        scan_info.waveform = zeros(
             samples_per_waveform,
             number_of_scanning_points_first_axis,
         )
