@@ -27,19 +27,20 @@ struct Scan1D
     waveform::Array{Float64, 2}
     coordinates::Array{Float64, 2}
     function Scan1D(
-        samples_per_waveform,
-        number_of_scanning_points_first_axis,
+        scope_info::TcpInstruments.ScopeInfo,
+        time,
+        samples_per_waveform::Int64,
+        number_of_scanning_points_first_axis::Int64,
     )
-        scan_info = new()
-        scan_info.waveform = zeros(
+        waveform = zeros(
             samples_per_waveform,
             number_of_scanning_points_first_axis,
         )
-        scan_info.coordinates = zeros(
+        coordinates = zeros(
             3, # number of coordinates. One for each axis: xyz
             number_of_scanning_points_first_axis,
         )
-        return scan_info
+        return new(scope_info, time, waveform, coordinates)
     end
 end
 
@@ -49,22 +50,23 @@ struct Scan2D
     waveform::Array{Float64, 3}
     coordinates::Array{Float64, 3}
     function Scan2D(
+        scope_info,
+        time,
         sample_size_of_single_scan,
         number_of_scans_first_axis,
         number_of_scans_second_axis,
     )
-        scan_info = new()
-        scan_info.waveform = zeros(
+        waveform = zeros(
             sample_size_of_single_scan,
             number_of_scans_first_axis,
             number_of_scans_second_axis
         )
-        scan_info.coordinates = zeros(
+        coordinates = zeros(
             3, # number of coordinates. One for each axis: xyz
             number_of_scans_first_axis,
             number_of_scans_second_axis
         )
-        return scan_info
+        return new(scope_info, time, waveform, coordinates)
     end
 end
 
@@ -74,24 +76,26 @@ struct Scan3D
     waveform::Array{Float64, 4}
     coordinates::Array{Float64, 4}
     function Scan3D(
+        scope_info,
+        time,
         sample_size_of_single_scan,
         number_of_scans_first_axis,
         number_of_scans_second_axis,
         number_of_scans_third_axis,
     )
-        scan_info = new()
-        scan_info.waveform = zeros(
+        waveform = zeros(
             sample_size_of_single_scan,
             number_of_scans_first_axis,
             number_of_scans_second_axis,
             number_of_scans_third_axis,
         )
-        scan_info.coordinates = zeros(
+        coordinates = zeros(
             3, # number of coordinates. One for each axis: xyz
             number_of_scans_first_axis,
             number_of_scans_second_axis,
             number_of_scans_third_axis,
         )
-        return scan_info
+
+        return new(scope_info, time, waveform, coordinates)
     end
 end

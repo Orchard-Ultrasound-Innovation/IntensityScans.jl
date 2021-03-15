@@ -132,7 +132,7 @@ function scan_single_axis(
     axis = get_axis(move_func)
     check_xyz_limits(scanner, axis, axis_range)
     positions = create_positions_vector(axis_range, num_scans)
-    scan_info = Scan1D(scanner.sample_size, num_scans)
+    scan_info = nothing
 
     for scan_index in 1:num_scans
         if verbose 
@@ -141,14 +141,13 @@ function scan_single_axis(
             Scanning $axis-direction: $scan_index/$num_scans iterations
             """
         end
-
-        first_pass = scan_index == 1
-
         move_func(scanner.xyz, positions[scan_index])
-
         # TODO: Pausing
-        
         data = get_data(scanner.scope, scanner.channel)
+
+        if scan_index == 1
+            scan_info = Scan1D(data.info, data.time, scanner.sample_size, num_scans)
+        end
 
         if data.info.num_points != scanner.sample_size
             error("Scope sample size is different from scanner")
@@ -156,13 +155,8 @@ function scan_single_axis(
 
         # TODO: if remove_amount_data != 0 trim beginning and end of data
 
-        if first_pass
-            scan_info.info = data.info
-        end
-
         scan_info.waveform[:, scan_index] = data.volt
         scan_info.coordinates[:, scan_index] = pos_xyz(scanner.xyz)
-
 
         if verbose
             time_left = elapsed_time(loop_time) do elapsed_seconds

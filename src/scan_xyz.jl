@@ -56,12 +56,7 @@ function scan_xyz(
     check_xyz_limits(scanner, "y", y_range)
     check_xyz_limits(scanner, "z", z_range)
     positions = create_positions_vector(z_range, z_num_scans)
-    wave_info = Scan3D(
-        scanner.sample_size, 
-        x_num_scans, 
-        y_num_scans, 
-        z_num_scans, 
-    )
+    wave_info = nothing
     for scan_index in 1:z_num_scans
         if verbose 
             loop_time = time()
@@ -80,13 +75,20 @@ function scan_xyz(
             y_num_scans,
             verbose=false, 
         )
+        if first_pass
+            wave_info = Scan3D(
+                wave_info_xy.scope_info,
+                wave_info_xy.time,
+                scanner.sample_size, 
+                x_num_scans, 
+                y_num_scans, 
+                z_num_scans, 
+            )
+        end
         wave_info.waveform[:, :, :, scan_index] =
             wave_info_xy.waveform
         wave_info.coordinates[:, :, :, scan_index] =
             wave_info_xy.coordinates
-        if first_pass
-            wave_info.info = wave_info_xy.info
-        end
 
         if verbose
             time_left = elapsed_time(loop_time) do elapsed_seconds

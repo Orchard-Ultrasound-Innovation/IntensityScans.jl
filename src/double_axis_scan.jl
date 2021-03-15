@@ -120,11 +120,7 @@ function scan_double_axis(
         second_axis_range,
         second_axis_num_scans,
     )
-    wave_info = Scan2D(
-        scanner.sample_size, 
-        first_axis_num_scans, 
-        second_axis_num_scans; 
-    )
+    wave_info = nothing
     for scan_index in 1:second_axis_num_scans
         if verbose 
             loop_time = time()
@@ -139,13 +135,21 @@ function scan_double_axis(
             scanner, first_axis_range, first_axis_num_scans;
             verbose=false, 
         )
+
+        if first_pass
+            wave_info = Scan2D(
+                wave_info_first_axis.scope_info,
+                wave_info_first_axis.time,
+                scanner.sample_size, 
+                first_axis_num_scans, 
+                second_axis_num_scans; 
+            )
+        end
+
         wave_info.waveform[:, :, scan_index] =
             wave_info_first_axis.waveform
         wave_info.coordinates[:, :, scan_index] =
             wave_info_first_axis.coordinates
-        if first_pass
-            wave_info.info = wave_info_first_axis.info
-        end
 
         if verbose
             time_left = elapsed_time(loop_time) do elapsed_seconds
