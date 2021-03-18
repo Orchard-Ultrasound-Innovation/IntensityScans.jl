@@ -2,6 +2,8 @@ module IntensityScans
 
 using TcpInstruments
 using ThorlabsLTStage
+using Unitful
+
 
 export
     IntensityScan,

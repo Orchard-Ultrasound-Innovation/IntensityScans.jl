@@ -21,10 +21,12 @@ struct IntensityScan
     sample_size::Int64
 end
 
+const Volt = typeof(1.0u"V")
+
 struct Scan1D
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
-    waveform::Array{Float64, 2}
+    waveform::Array{Volt, 2}
     coordinates::Array{Float64, 2}
     function Scan1D(
         scope_info::TcpInstruments.ScopeInfo,
@@ -47,7 +49,7 @@ end
 struct Scan2D
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
-    waveform::Array{Float64, 3}
+    waveform::Array{Volt, 3}
     coordinates::Array{Float64, 3}
     function Scan2D(
         scope_info,
@@ -73,7 +75,7 @@ end
 struct Scan3D
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
-    waveform::Array{Float64, 4}
+    waveform::Array{Volt, 4}
     coordinates::Array{Float64, 4}
     function Scan3D(
         scope_info,
