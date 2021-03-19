@@ -34,7 +34,7 @@ struct Scan1D
         samples_per_waveform::Int64,
         number_of_scanning_points_first_axis::Int64,
     )
-        waveform = zeros(
+        waveform = u"V" * zeros(
             samples_per_waveform,
             number_of_scanning_points_first_axis,
         )
@@ -58,7 +58,7 @@ struct Scan2D
         number_of_scans_first_axis,
         number_of_scans_second_axis,
     )
-        waveform = zeros(
+        waveform = u"V" * zeros(
             sample_size_of_single_scan,
             number_of_scans_first_axis,
             number_of_scans_second_axis
@@ -85,7 +85,7 @@ struct Scan3D
         number_of_scans_second_axis,
         number_of_scans_third_axis,
     )
-        waveform = zeros(
+        waveform = u"V" * zeros(
             sample_size_of_single_scan,
             number_of_scans_first_axis,
             number_of_scans_second_axis,
