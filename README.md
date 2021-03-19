@@ -14,7 +14,7 @@ configuring and using these packages:
 - [ThorlabsLTStage](https://github.com/Orchard-Ultrasound-Innovation/ThorlabsLTStage.jl)
 - [TcpInstruments](https://github.com/Orchard-Ultrasound-Innovation/TcpInstruments.jl)
 
-```
+```julia
 using IntensityScans
 # You only need to load the configs if you have aliases you want to access
 using TcpInstruments; TcpInstruments.load_config()
@@ -27,8 +27,8 @@ number_of_samples = get_data(scope, channel).info.num_points
 
 scanner = IntensityScan(lts, scope, channel, number_of_samples)
 
-info_x = scan_x(scanner, [0, .05], 5)
-info_xy = scan_xy(scanner, [0, .05], 5, [0, 0.02], 2)
+info_x   = scan_x(scanner,   [0, .05], 5)
+info_xy  = scan_xy(scanner,  [0, .05], 5, [0, 0.02], 2)
 info_xyz = scan_xyz(scanner, [0, .05], 5, [0, 0.02], 2, [0, 0.2], 2)
 
 save(info_x)
