@@ -4,27 +4,33 @@ using TcpInstruments
 using ThorlabsLTStage
 using Unitful
 
+export IntensityScan
+export Scan1D, Scan2D, Scan3D
+export scan_x, scan_y, scan_z
+export scan_xy, scan_xz, scan_yz
+export scan_xyz
+export save, load
 
-export
-    IntensityScan,
-    Scan1D,
-    Scan2D,
-    Scan3D,
+# Metrics
+export ScanParameters
+export ScanMetric
+export get_metrics
+export intensity, intensity_sppa, intensity_spta, mechanical_index
 
-    scan_x,
-    scan_y,
-    scan_z,
-    scan_xy,
-    scan_xz,
-    scan_yz,
-    scan_xyz
+
+# IntensityMetrics
+export Medium, Excitation
+
 
 include("util.jl")
 
 include("models.jl")
+include("plots.jl")
 
 include("single_axis_scan.jl")
 include("double_axis_scan.jl")
 include("scan_xyz.jl")
+
+include("metrics/metrics.jl")
 
 end

@@ -1,3 +1,4 @@
+using RecipesBase
 """
 Input:
        xyz: The handle of desired xyz stage
@@ -19,6 +20,7 @@ struct IntensityScan
     scope::TcpInstruments.Instr{T} where T <: Oscilloscope
     channel::Int64
     sample_size::Int64
+    # TODO calibration::Calibration
 end
 
 const Volt = typeof(1.0u"V")
