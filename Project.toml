@@ -17,6 +17,7 @@ InstrumentConfig = "0.2"
 TcpInstruments = "0.5"
 ThorlabsLTStage = "0.1, 0.2"
 Unitful = "1.6"
+UnitfulRecipes = "1.1"
 julia = "1"
 
 [extras]
