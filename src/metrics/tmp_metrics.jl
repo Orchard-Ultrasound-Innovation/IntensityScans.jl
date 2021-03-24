@@ -31,3 +31,35 @@ function intensity(p::Unitful.Pressure, M::Medium)
     return format_intensity(p^2 / (M.density * M.c))
 end
 
+"""
+    mechanical_index(p::Unitful.Pressure, E::Excitation)
+    p is expected to be a vector/time series containing the measured pressure from the excitation pulse.
+    Output is dimensionless.
+"""
+function mechanical_index(p::Vector{T}, E::Excitation) where {T<:Unitful.Pressure}
+    peak_rarefaction_pressure = peak_np(uconvert.(u"MPa", p))
+    center_frequency = sqrt(uconvert(u"MHz", E.f0))
+    return ustrip(peak_rarefaction_pressure / center_frequency)
+end
+
+"""
+    peak_np(p)
+    Peak Negative Pressure.
+"""
+peak_np(p::Vector{T}) where {T<:Unitful.Pressure}= abs(minimum(p)) # Pa
+
+"""
+    peak_pp(p)
+    Peak Positive Pressure.
+    Output unit is unchanged, Pa.
+"""
+peak_pp(p::Vector{T}) where {T<:Unitful.Pressure} = abs(maximum(p)) # Pa
+
+"""
+    peak_ptp(p)
+    peak pressure measured in peak-to-peak.
+    Output unit is unchanged, Pa.
+"""
+peak_ptp(p::Vector{T}) where {T<:Unitful.Pressure} =
+    peak_pp(p) + peak_np(p)  #Pa
+

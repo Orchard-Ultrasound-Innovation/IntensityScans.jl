@@ -40,7 +40,7 @@ end
     seriestype := :heatmap
     scaled_time = round.(scaled_time; digits=2)
     waveform = ustrip(scan.waveform)
-    # Collapse y first 3rd dimension
+    # Collapse y first. 3rd dimension
     waveform = vcat([waveform[:, :, i, :] for i in 1:size(waveform, 3)]...)
     # Collapse z
     waveform = vcat([waveform[:, :, i] for i in 1:size(waveform, 3)]...)

@@ -54,3 +54,7 @@ function intensity_spta(p::Array{T, 4}, M::Medium, E::Excitation) where
 
     return IntensitySpta3D(calc_intensity_spta(p, M, E))
 end
+
+squeeze(A::PressureArray{2}) = A[1, :]
+squeeze(A::PressureArray{3}) = A[1, :, :]
+squeeze(A::PressureArray{4}) = A[1, :, :, :]

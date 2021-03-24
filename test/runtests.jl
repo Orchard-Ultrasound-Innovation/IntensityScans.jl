@@ -30,6 +30,9 @@ metrics3d = get_metrics(params, scan3d)
         # plot(metrics3d.isppa; xslice=3) # 2d cross section where measurement index of x axis is 3
         # plot(metrics3d.ispta; yslice=2)
         # plot(metrics3d.ispta; zslice=2)
+        # plot(scan1d)
+        # plot(scan2d)
+        # plot(scan3d)
     end
     # Write your tests here.
     @info metrics1d
