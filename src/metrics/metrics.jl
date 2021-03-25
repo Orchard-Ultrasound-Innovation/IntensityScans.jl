@@ -21,7 +21,7 @@ function get_metrics(params::ScanParameters, scan::Union{Scan1D, Scan2D, Scan3D}
 
     isppa_max =  get_max(scan.coordinates, isppa.val)
     ispta_max = get_max(scan.coordinates, ispta.val)
-    mi_max = get_max(scan.coordinates, mi)
+    mi_max = get_max(scan.coordinates, mi.val)
 
     return ScanMetric(
         params,

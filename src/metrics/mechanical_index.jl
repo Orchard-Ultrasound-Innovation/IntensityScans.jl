@@ -1,14 +1,11 @@
 mechanical_index_helper(pressure, E) = 
     squeeze(mapslices(p->mechanical_index(p, E), pressure; dims=1))
 
-function mechanical_index(pressure::PressureArray{2}, E::Excitation)
-    return mechanical_index_helper(pressure, E)
-end
+mechanical_index(pressure::PressureArray{2}, excitation) =
+    Metric{MI, 1}(mechanical_index_helper(pressure, excitation))
 
-function mechanical_index(pressure::PressureArray{3}, E::Excitation)
-    return mechanical_index_helper(pressure, E)
-end
+mechanical_index(pressure::PressureArray{3}, excitation) =
+    Metric{MI, 2}(mechanical_index_helper(pressure, excitation))
 
-function mechanical_index(pressure::PressureArray{4}, E::Excitation) 
-    return mechanical_index_helper(pressure, E)
-end
+mechanical_index(pressure::PressureArray{4}, excitation) =
+    Metric{MI, 3}(mechanical_index_helper(pressure, excitation))
