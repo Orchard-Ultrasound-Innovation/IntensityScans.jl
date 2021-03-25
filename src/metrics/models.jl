@@ -19,40 +19,55 @@ type(a::Metric{ISPPA, T}) where T = "Intensity SPPA $(T)D"
 type(a::Metric{ISPTA, T}) where T = "Intensity SPTA $(T)D"
 type(a::Metric{MI, T}) where T = "Mechanical Index $(T)D"
 
-@recipe function plot(sppa::Metric{ISPPA, 1}; title=type(sppa), label="intensity", axes="nil")
+@recipe function plot(metric::Metric{ISPPA, 1}; title=type(metric), label="intensity", axes="nil")
     axes == "nil" && error("Keyword missing: axes=\"x\" or axes=\"y\"..")
     xguide --> "Position ($(axes) axis)"
     yguide --> "Intensity"
-    return sppa.val
+    return metric.val
 end
 
-@recipe function plot(spta::Metric{ISPTA, 1}; title=type(spta), label="intensity", axes="nil")
+@recipe function plot(metric::Metric{ISPTA, 1}; title=type(metric), label="intensity", axes="nil")
     axes == "nil" && error("Keyword missing: axes=\"x\" or axes=\"y\"..")
     xguide --> "Position ($(axes) axis)"
     yguide --> "Intensity"
-    return spta.val
+    return metric.val
 end
 
-@recipe function plot(sppa::Metric{ISPPA, 2}; title=type(sppa), axes="nil") 
+@recipe function plot(metric::Metric{MI, 1}; title=type(metric), label="Mechanical Index", axes="nil")
+    axes == "nil" && error("Keyword missing: axes=\"x\" or axes=\"y\"..")
+    xguide --> "Position ($(axes) axis)"
+    yguide --> "Mechanical Index"
+    return metric.val
+end
+
+@recipe function plot(metric::Metric{ISPPA, 2}; title=type(metric), axes="nil") 
     axes == "nil" && error("Keyword missing: axes=\"xy\" or axes=\"yz\"..")
     seriestype := :heatmap
     xguide --> "Axis $(axes[1])"
     yguide --> "Axis $(axes[2])"
 
-    return specific_pressure_plot_helper_2d(sppa.val)
+    return specific_pressure_plot_helper_2d(metric.val)
 end
 
-@recipe function plot(spta::Metric{ISPTA, 2}; title=type(spta), axes="nil") 
+@recipe function plot(metric::Metric{ISPTA, 2}; title=type(metric), axes="nil") 
     axes == "nil" && error("Keyword missing: axes=\"xy\" or axes=\"yz\"..")
     seriestype := :heatmap
     xguide --> "Axis $(axes[1])"
     yguide --> "Axis $(axes[2])"
-    return specific_pressure_plot_helper_2d(spta.val)
+    return specific_pressure_plot_helper_2d(metric.val)
+end
+
+@recipe function plot(metric::Metric{MI, 2}; title=type(metric), axes="nil") 
+    axes == "nil" && error("Keyword missing: axes=\"xy\" or axes=\"yz\"..")
+    seriestype := :heatmap
+    xguide --> "Axis $(axes[1])"
+    yguide --> "Axis $(axes[2])"
+    return specific_pressure_plot_helper_2d(metric.val)
 end
 
 @recipe function plot(
-    isppa::Metric{ISPPA, 3};
-    title=type(isppa),
+    metric::Metric{ISPPA, 3};
+    title=type(metric),
     xslice = nothing,
     yslice = nothing,
     zslice = nothing,
@@ -60,7 +75,7 @@ end
 )
     seriestype := :heatmap
     data, axes = specific_pressure_plot_helper_3d(
-        isppa.val, 
+        metric.val, 
         xslice, 
         yslice, 
         zslice, 
@@ -71,10 +86,38 @@ end
     return data
 end
 
-@recipe function plot(ispta::Metric{ISPTA, 3}; title=type(ispta), xslice = nothing, yslice = nothing, zslice = nothing, axes="xyz") 
+@recipe function plot(
+    metric::Metric{ISPTA, 3}; 
+    title=type(metric), 
+    xslice = nothing, 
+    yslice = nothing, 
+    zslice = nothing, 
+    axes="xyz"
+)
     seriestype := :heatmap
     data, axes = specific_pressure_plot_helper_3d(
-        ispta.val, 
+        metric.val, 
+        xslice, 
+        yslice, 
+        zslice, 
+        axes
+    )
+    xguide --> "Axis $(axes[1])"
+    yguide --> "Axis $(axes[2])"
+    return data
+end
+
+@recipe function plot(
+    metric::Metric{MI, 3}; 
+    title=type(metric), 
+    xslice = nothing, 
+    yslice = nothing, 
+    zslice = nothing, 
+    axes="xyz"
+)
+    seriestype := :heatmap
+    data, axes = specific_pressure_plot_helper_3d(
+        metric.val, 
         xslice, 
         yslice, 
         zslice, 

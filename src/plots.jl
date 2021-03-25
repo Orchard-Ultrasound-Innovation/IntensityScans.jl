@@ -1,4 +1,4 @@
-@recipe function plot(scan::Scan1D; raw=false, isppa=false, ispta=false)
+@recipe function plot(scan::Scan1D; raw=false, isppa=false, ispta=false, mi=false)
     count = 0
     if raw 
         count += 1
@@ -7,6 +7,9 @@
         count += 1
     end
     if ispta 
+        count += 1
+    end
+    if mi 
         count += 1
     end
     layout := (1, count)
@@ -37,9 +40,15 @@
             return scan.metrics.ispta
         end
     end
+    if mi
+        @series begin
+            axes --> scan.axes
+            return scan.metrics.mechanical_index
+        end
+    end
 end
 
-@recipe function plot(scan::Scan2D; raw=false, isppa=false, ispta=false)
+@recipe function plot(scan::Scan2D; raw=false, isppa=false, ispta=false, mi=false)
     count = 0
     if raw 
         count += 1
@@ -48,6 +57,9 @@ end
         count += 1
     end
     if ispta 
+        count += 1
+    end
+    if mi 
         count += 1
     end
     layout := (1, count)
@@ -86,9 +98,24 @@ end
             return scan.metrics.ispta
         end
     end
+    if mi
+        @series begin
+            axes --> scan.axes
+            return scan.metrics.mechanical_index
+        end
+    end
 end
 
-@recipe function plot(scan::Scan3D; raw=false, isppa=false, ispta=false,xslice=nothing, yslice=nothing, zslice=nothing)
+@recipe function plot(
+    scan::Scan3D;
+    raw=false,
+    isppa=false,
+    ispta=false,
+    mi=false,
+    xslice=nothing,
+    yslice=nothing,
+    zslice=nothing
+)
     count = 0
     if raw 
         count += 1
@@ -97,6 +124,9 @@ end
         count += 1
     end
     if ispta 
+        count += 1
+    end
+    if mi 
         count += 1
     end
     layout := (1, count)
@@ -144,6 +174,14 @@ end
             yslice := yslice
             zslice := zslice
             return scan.metrics.ispta
+        end
+    end
+    if mi
+        @series begin
+            xslice := xslice
+            yslice := yslice
+            zslice := zslice
+            return scan.metrics.mechanical_index
         end
     end
 end
