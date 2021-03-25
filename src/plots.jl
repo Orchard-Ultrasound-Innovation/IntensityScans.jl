@@ -30,6 +30,7 @@
     end
 
     axes --> scan.axes
+    coordinates := scan.coordinates
 
     if isppa
         @series begin
@@ -88,6 +89,7 @@ end
     end
 
     axes --> scan.axes
+    coordinates := scan.coordinates
 
     if isppa
         @series begin
