@@ -77,6 +77,7 @@ function scan_xyz(
         )
         if first_pass
             wave_info = Scan3D(
+                "xyz",
                 wave_info_xy.scope_info,
                 wave_info_xy.time,
                 scanner.sample_size, 

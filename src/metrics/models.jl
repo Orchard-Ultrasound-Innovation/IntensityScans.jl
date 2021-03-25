@@ -1,85 +1,103 @@
 using RecipesBase
 using UnitfulRecipes
 
-# TODO: Types/Make immutable
-mutable struct ScanMetric
-    params
-    pressure
-    isppa
-    isppa_max
-    ispta
-    ispta_max
-    mechanical_index
-    mechanical_index_max
-end
-
-struct ScanParameters
-    medium
-    excitation
-    hydrophone_id
-    preamp_id
-    f0
-    calibration_factor
-end
-
-function ScanParameters(medium, excitation, f0, hydrophone_id, preamp_id = nothing)
-    factor = volt_to_pressure(f0, hydrophone_id, preamp_id)
-    return ScanParameters(medium, excitation, f0, hydrophone_id, preamp_id, factor)
-end
+const PressureArray{x} = Array{T, x} where T <: Union{Unitful.Pressure, Number}
 
 struct IntensitySppa1D
-    intensity
+    val
 end
 
 struct IntensitySppa2D
-    intensity
+    val
 end
 
 struct IntensitySppa3D
-    intensity
+    val
 end
 
 struct IntensitySpta1D
-    intensity
+    val
 end
 
 struct IntensitySpta2D
-    intensity
+    val
 end
 
 struct IntensitySpta3D
-    intensity
+    val
+end
+
+struct MechanicalIndex1D
+    val
+end
+
+struct MechanicalIndex2D
+    val
+end
+
+struct MechanicalIndex3D
+    val
 end
 
 @recipe function plot(sppa::IntensitySppa1D; title="Intensity Sppa 1D", label="intensity", xguide="position")
-   return sppa.intensity
+   return sppa.val
 end
 
 @recipe function plot(spta::IntensitySpta1D; title="Intensity Spta 1D", label="intensity", xguide="position")
-   return spta.intensity
+   return spta.val
 end
 
-@recipe function plot(sppa::IntensitySppa2D; title="Intensity Sppa 2D") 
+@recipe function plot(sppa::IntensitySppa2D; title="Intensity Sppa 2D", axes=axes) 
     seriestype := :heatmap
-    return specific_pressure_plot_helper_2d(sppa.intensity)
+    if !isempty(axes)
+        xguide := "Axis $(axes[1])"
+        yguide := "Axis $(axes[2])"
+    end
+    return specific_pressure_plot_helper_2d(sppa.val)
 end
 
-@recipe function plot(spta::IntensitySpta2D; title="Intensity Spta 2D") 
+@recipe function plot(spta::IntensitySpta2D; title="Intensity Spta 2D", axes=axes) 
     seriestype := :heatmap
-    return specific_pressure_plot_helper_2d(spta.intensity)
+    if !isempty(axes)
+        xguide := "Axis $(axes[1])"
+        yguide := "Axis $(axes[2])"
+    end
+    return specific_pressure_plot_helper_2d(spta.val)
 end
 
-@recipe function plot(isppa::IntensitySppa3D; title="Intensity Sppa 3D", xslice = nothing, yslice = nothing, zslice = nothing) 
+@recipe function plot(isppa::IntensitySppa3D; title="Intensity Sppa 3D", xslice = nothing, yslice = nothing, zslice = nothing, axes="xyz") 
     seriestype := :heatmap
-    return specific_pressure_plot_helper_3d(isppa.intensity, xslice, yslice, zslice)
+    data, axes = specific_pressure_plot_helper_3d(
+        isppa.val, 
+        xslice, 
+        yslice, 
+        zslice, 
+        axes
+    )
+    if !isempty(axes)
+        xguide := "Axis $(axes[1])"
+        yguide := "Axis $(axes[2])"
+    end
+    return data
 end
 
-@recipe function plot(ispta::IntensitySpta3D; title="Intensity Spta 3D", xslice = nothing, yslice = nothing, zslice = nothing) 
+@recipe function plot(ispta::IntensitySpta3D; title="Intensity Spta 3D", xslice = nothing, yslice = nothing, zslice = nothing, axes="xyz") 
     seriestype := :heatmap
-    return specific_pressure_plot_helper_3d(ispta.intensity, xslice, yslice, zslice)
+    data, axes = specific_pressure_plot_helper_3d(
+        ispta.val, 
+        xslice, 
+        yslice, 
+        zslice, 
+        axes
+    )
+    if !isempty(axes)
+        xguide --> "Axis $(axes[1])"
+        yguide --> "Axis $(axes[2])"
+    end
+    return data
 end
 
-function specific_pressure_plot_helper_3d(data, xslice, yslice, zslice)
+function specific_pressure_plot_helper_3d(data, xslice, yslice, zslice, axes)
     if reduce(+, isnothing.([xslice, yslice, zslice])) != 2
         error("Only one of the keyword arguments must be set:
               xslice, yslice, or zslice")
@@ -88,19 +106,22 @@ function specific_pressure_plot_helper_3d(data, xslice, yslice, zslice)
             if xslice < 1 || xslice > size(data, 1)
                 error("xslice must be between 1 and $(size(data, 1))")
             end
+            axes = axes[2:3]
             data[xslice, :, :]
         elseif !isnothing(yslice)
             if yslice < 1 || yslice > size(data, 2)
-                error("xslice must be between 1 and $(size(data, 1))")
+                error("yslice must be between 1 and $(size(data, 2))")
             end
+            axes = axes[1:2:3]
             data[:, yslice, :]
         elseif !isnothing(zslice)
             if zslice < 1 || zslice > size(data, 3)
-                error("xslice must be between 1 and $(size(data, 1))")
+                error("zslice must be between 1 and $(size(data, 3))")
             end
+            axes = axes[1:2]
             data[:, :, zslice]
     end
-    return specific_pressure_plot_helper_2d(data_2d)
+    return specific_pressure_plot_helper_2d(data_2d), axes
     
 end
 

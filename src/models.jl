@@ -1,4 +1,31 @@
 using RecipesBase
+
+struct ScanParameters
+    medium
+    excitation
+    hydrophone_id
+    preamp_id
+    f0
+    calibration_factor
+end
+
+function ScanParameters(medium, excitation, f0, hydrophone_id, preamp_id = nothing)
+    factor = volt_to_pressure(f0, hydrophone_id, preamp_id)
+    return ScanParameters(medium, excitation, f0, hydrophone_id, preamp_id, factor)
+end
+
+# TODO: Types/Make immutable
+struct ScanMetric
+    params
+    pressure
+    isppa
+    isppa_max
+    ispta
+    ispta_max
+    mechanical_index
+    mechanical_index_max
+end
+
 """
 Input:
        xyz: The handle of desired xyz stage
@@ -26,80 +53,93 @@ end
 const Volt = typeof(1.0u"V")
 
 struct Scan1D
+    axes::String
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     waveform::Array{Volt, 2}
     coordinates::Array{Float64, 2}
-    function Scan1D(
-        scope_info::TcpInstruments.ScopeInfo,
-        time,
-        samples_per_waveform::Int64,
-        number_of_scanning_points_first_axis::Int64,
+    metrics::Union{Nothing, ScanMetric}
+end
+
+function Scan1D(
+    axes,
+    scope_info::TcpInstruments.ScopeInfo,
+    time,
+    samples_per_waveform::Int64,
+    number_of_scanning_points_first_axis::Int64,
+)
+    waveform = u"V" * zeros(
+        samples_per_waveform,
+        number_of_scanning_points_first_axis,
     )
-        waveform = u"V" * zeros(
-            samples_per_waveform,
-            number_of_scanning_points_first_axis,
-        )
-        coordinates = zeros(
-            3, # number of coordinates. One for each axis: xyz
-            number_of_scanning_points_first_axis,
-        )
-        return new(scope_info, time, waveform, coordinates)
-    end
+    coordinates = zeros(
+        3, # number of coordinates. One for each axis: xyz
+        number_of_scanning_points_first_axis,
+    )
+    return Scan1D(axes, scope_info, time, waveform, coordinates, nothing)
 end
 
 struct Scan2D
+    axes::String
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     waveform::Array{Volt, 3}
     coordinates::Array{Float64, 3}
-    function Scan2D(
-        scope_info,
-        time,
+    metrics::Union{Nothing, ScanMetric}
+end
+
+function Scan2D(
+    axes,
+    scope_info,
+    time,
+    sample_size_of_single_scan,
+    number_of_scans_first_axis::Int,
+    number_of_scans_second_axis::Int,
+)
+    waveform = u"V" * zeros(
         sample_size_of_single_scan,
         number_of_scans_first_axis,
         number_of_scans_second_axis,
     )
-        waveform = u"V" * zeros(
-            sample_size_of_single_scan,
-            number_of_scans_first_axis,
-            number_of_scans_second_axis
-        )
-        coordinates = zeros(
-            3, # number of coordinates. One for each axis: xyz
-            number_of_scans_first_axis,
-            number_of_scans_second_axis
-        )
-        return new(scope_info, time, waveform, coordinates)
-    end
+    coordinates = zeros(
+        3, # number of coordinates. One for each axis: xyz
+        number_of_scans_first_axis,
+        number_of_scans_second_axis,
+    )
+    return Scan2D(axes, scope_info, time, waveform, coordinates, nothing)
 end
 
 struct Scan3D
+    axes::String
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     waveform::Array{Volt, 4}
     coordinates::Array{Float64, 4}
-    function Scan3D(
-        scope_info,
-        time,
+    metrics::Union{Nothing, ScanMetric}
+end
+
+function Scan3D(
+    axes,
+    scope_info,
+    time,
+    sample_size_of_single_scan,
+    number_of_scans_first_axis,
+    number_of_scans_second_axis,
+    number_of_scans_third_axis,
+)
+    waveform = u"V" * zeros(
         sample_size_of_single_scan,
         number_of_scans_first_axis,
         number_of_scans_second_axis,
         number_of_scans_third_axis,
     )
-        waveform = u"V" * zeros(
-            sample_size_of_single_scan,
-            number_of_scans_first_axis,
-            number_of_scans_second_axis,
-            number_of_scans_third_axis,
-        )
-        coordinates = zeros(
-            3, # number of coordinates. One for each axis: xyz
-            number_of_scans_first_axis,
-            number_of_scans_second_axis,
-            number_of_scans_third_axis,
-        )
+    coordinates = zeros(
+        3, # number of coordinates. One for each axis: xyz
+        number_of_scans_first_axis,
+        number_of_scans_second_axis,
+        number_of_scans_third_axis,
+    )
 
-        return new(scope_info, time, waveform, coordinates)
-    end
+    return Scan3D(axes, scope_info, time, waveform, coordinates, nothing)
 end
+

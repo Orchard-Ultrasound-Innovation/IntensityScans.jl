@@ -14,7 +14,7 @@ export save, load
 # Metrics
 export ScanParameters
 export ScanMetric
-export get_metrics
+export compute_metrics, get_metrics
 export intensity, intensity_sppa, intensity_spta, mechanical_index
 
 

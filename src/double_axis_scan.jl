@@ -121,10 +121,11 @@ function scan_double_axis(
         second_axis_num_scans,
     )
     wave_info = nothing
+    axes = "$first_axis$second_axis"
     for scan_index in 1:second_axis_num_scans
         if verbose 
             loop_time = time()
-            @info "Scanning $first_axis$second_axis-direction: " *
+            @info "Scanning $axes-direction: " *
                   "$scan_index/$second_axis_num_scans iterations"
         end
         first_pass = scan_index == 1
@@ -138,6 +139,7 @@ function scan_double_axis(
 
         if first_pass
             wave_info = Scan2D(
+                axes,
                 wave_info_first_axis.scope_info,
                 wave_info_first_axis.time,
                 scanner.sample_size, 

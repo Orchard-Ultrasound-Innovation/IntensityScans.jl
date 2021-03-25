@@ -145,7 +145,7 @@ function scan_single_axis(
         data = get_data(scanner.scope, scanner.channel)
 
         if scan_index == 1
-            scan_info = Scan1D(data.info, data.time, scanner.sample_size, num_scans)
+            scan_info = Scan1D(axis, data.info, data.time, scanner.sample_size, num_scans)
         end
 
         if data.info.num_points != scanner.sample_size

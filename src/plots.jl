@@ -1,10 +1,6 @@
-@recipe function plot(scan::Scan1D; label="", title="Scan1D", xguide="Measurement Index / 1", yguide="0", xticks=3, colorbar_title="Voltage / V")
+@recipe function plot(scan::Scan1D; label="", title="Scan1D", xguide="Measurement Index / 1", xticks=3, colorbar_title="Voltage / V")
     time_unit, scaled_time = autoscale_seconds(scan.time)
-    if yguide == "0"
-        yguide := "Time / " * time_unit
-    else
-        yguide := yguide
-    end
+    yguide --> "Time / " * time_unit
     seriestype := :heatmap
     scaled_time = round.(scaled_time; digits=2)
     return string.(1:size(scan.coordinates, 2)), string.(scaled_time),  ustrip(scan.waveform)
@@ -12,11 +8,7 @@ end
 
 @recipe function plot(scan::Scan2D; label="", title="Scan2D", xguide="Measurement Index / 1", yguide="0", xticks=3, colorbar_title="Voltage / V")
     time_unit, scaled_time = autoscale_seconds(scan.time)
-    if yguide == "0"
-        yguide := "Time / " * time_unit
-    else
-        yguide := yguide
-    end
+    yguide --> "Time / " * time_unit
     seriestype := :heatmap
     scaled_time = round.(scaled_time; digits=2)
     waveform = ustrip(scan.waveform)
@@ -30,29 +22,64 @@ end
     return position_idx, string.(scaled_time),  waveform
 end
 
-@recipe function plot(scan::Scan3D; label="", title="Scan3D", xguide="Measurement Index / 1", yguide="0", xticks=3, colorbar_title="Voltage / V")
-    time_unit, scaled_time = autoscale_seconds(scan.time)
-    if yguide == "0"
-        yguide := "Time / " * time_unit
-    else
-        yguide := yguide
+@recipe function plot(scan::Scan3D; raw=false, isppa=false, ispta=false,xslice=nothing, yslice=nothing, zslice=nothing)
+    count = 0
+    if raw 
+        count += 1
     end
-    seriestype := :heatmap
-    scaled_time = round.(scaled_time; digits=2)
-    waveform = ustrip(scan.waveform)
-    # Collapse y first. 3rd dimension
-    waveform = vcat([waveform[:, :, i, :] for i in 1:size(waveform, 3)]...)
-    # Collapse z
-    waveform = vcat([waveform[:, :, i] for i in 1:size(waveform, 3)]...)
-    position_idx = []
-    for z in 1:size(scan.coordinates, 4)
-        for y in 1:size(scan.coordinates, 3)
-            for x in 1:size(scan.coordinates, 2)
-                push!(position_idx, "($x, $y, $z)")
+    if isppa 
+        count += 1
+    end
+    if ispta 
+        count += 1
+    end
+    layout := (1, count)
+    if raw
+        @series begin
+        time_unit, scaled_time = autoscale_seconds(scan.time)
+
+        title --> "Scan3D"
+        xguide --> "Measurement Index / 1"
+        yguide --> "Time / " * time_unit
+        colorbar_title --> "Voltage / V"
+        xticks --> 3
+        seriestype := :heatmap
+
+        scaled_time = round.(scaled_time; digits=2)
+        waveform = ustrip(scan.waveform)
+        # Collapse y first. 3rd dimension
+        waveform = vcat([waveform[:, :, i, :] for i in 1:size(waveform, 3)]...)
+        # Collapse z
+        waveform = vcat([waveform[:, :, i] for i in 1:size(waveform, 3)]...)
+
+        position_idx = []
+        for z in 1:size(scan.coordinates, 4)
+            for y in 1:size(scan.coordinates, 3)
+                for x in 1:size(scan.coordinates, 2)
+                    push!(position_idx, "($x, $y, $z)")
+                end
             end
         end
+
+        return position_idx, string.(scaled_time),  waveform
+        end
     end
-    return position_idx, string.(scaled_time),  waveform
+    if isppa
+        @series begin
+            xslice := xslice
+            yslice := yslice
+            zslice := zslice
+            return scan.metrics.isppa
+        end
+    end
+    if ispta
+        @series begin
+            xslice := xslice
+            yslice := yslice
+            zslice := zslice
+            return scan.metrics.ispta
+        end
+    end
 end
 
 # TODO: TcpInstruments.autoscale should be made more generic, then use that

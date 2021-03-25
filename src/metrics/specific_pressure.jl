@@ -28,7 +28,7 @@ function intensity_sppa(p::Array{T, 4}, M::Medium, E::Excitation) where
 end
 
 
-calc_intensity_spta(p, M, E) = intensity_sppa(p, M, E).intensity * E.duty_cycle # W/cm²
+calc_intensity_spta(p, M, E) = intensity_sppa(p, M, E).val * E.duty_cycle # W/cm²
 
 """
     intensity_spta(p::Unitful.Pressure, M::Medium, E::Excitation)
