@@ -5,15 +5,24 @@ include("models.jl")
 include("specific_pressure.jl")
 include("mechanical_index.jl")
 
+function get_max(coordinates, data)
+    max, max_coor = findmax(data)
+    return max, coordinates[:, max_coor]
+    
+end
+
 function get_metrics(params::ScanParameters, scan::Union{Scan1D, Scan2D, Scan3D})
     voltage = scan.waveform
     pressure = voltage * params.calibration_factor
+
     isppa = intensity_sppa(pressure, params.medium, params.excitation)
-    isppa_max =  maximum(isppa.val)
     ispta = intensity_spta(pressure, params.medium, params.excitation)
-    ispta_max = maximum(ispta.val)
-    mechanical_idx = mechanical_index(pressure, params.excitation)
-    mechanical_index_max = maximum(mechanical_idx) # TODO: Confirm
+    mi = mechanical_index(pressure, params.excitation)
+
+    isppa_max =  get_max(scan.coordinates, isppa.val)
+    ispta_max = get_max(scan.coordinates, ispta.val)
+    mi_max = get_max(scan.coordinates, mi)
+
     return ScanMetric(
         params,
         pressure,
@@ -21,8 +30,8 @@ function get_metrics(params::ScanParameters, scan::Union{Scan1D, Scan2D, Scan3D}
         isppa_max,
         ispta,
         ispta_max,
-        mechanical_idx,
-        mechanical_index_max,
+        mi,
+        mi_max,
      )
 end
 

@@ -3,6 +3,10 @@ using UnitfulRecipes
 
 const PressureArray{x} = Array{T, x} where T <: Union{Unitful.Pressure, Number}
 
+squeeze(A::PressureArray{2}) = A[1, :]
+squeeze(A::PressureArray{3}) = A[1, :, :]
+squeeze(A::PressureArray{4}) = A[1, :, :, :]
+
 const ISPPA = :IntensitySPPA
 const ISPTA = :IntensitySPTA
 const MI = :MechanicalIndex
@@ -14,42 +18,6 @@ end
 type(a::Metric{ISPPA, T}) where T = "Intensity SPPA $(T)D"
 type(a::Metric{ISPTA, T}) where T = "Intensity SPTA $(T)D"
 type(a::Metric{MI, T}) where T = "Mechanical Index $(T)D"
-
-struct IntensitySppa1D
-    val
-end
-
-struct IntensitySppa2D
-    val
-end
-
-struct IntensitySppa3D
-    val
-end
-
-struct IntensitySpta1D
-    val
-end
-
-struct IntensitySpta2D
-    val
-end
-
-struct IntensitySpta3D
-    val
-end
-
-struct MechanicalIndex1D
-    val
-end
-
-struct MechanicalIndex2D
-    val
-end
-
-struct MechanicalIndex3D
-    val
-end
 
 @recipe function plot(sppa::Metric{ISPPA, 1}; title=type(sppa), label="intensity", axes="nil")
     axes == "nil" && error("Keyword missing: axes=\"x\" or axes=\"y\"..")

@@ -39,7 +39,3 @@ intensity_spta(pressure::PressureArray{3}, medium, excitation) =
 
 intensity_spta(pressure::PressureArray{4}, medium, excitation) =
     Metric{ISPTA, 3}(calc_intensity_spta(pressure, medium, excitation))
-
-squeeze(A::PressureArray{2}) = A[1, :]
-squeeze(A::PressureArray{3}) = A[1, :, :]
-squeeze(A::PressureArray{4}) = A[1, :, :, :]
