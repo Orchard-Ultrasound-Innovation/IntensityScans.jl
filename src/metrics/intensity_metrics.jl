@@ -35,7 +35,7 @@ function intensity_sppa(
 ) where T <:Unitful.Pressure
     intensities = mapreduce(p -> intensity(p, M), +, pressure; dims=1)  * u"s"
     adjusted = intensities / (E.pulse_duration * 10_000u"cm^2/m^2")
-    return IntensitySppa1D(adjusted[1, :])
+    return Metric{ISPPA, 1}(adjusted[1, :])
 end
 
 
@@ -45,7 +45,7 @@ function intensity_sppa(
 ) where T <:Unitful.Pressure
     intensities = mapreduce(p -> intensity(p, M), +, pressure; dims=1)  * u"s"
     adjusted = intensities / (E.pulse_duration * 10_000u"cm^2/m^2")
-    return IntensitySppa2D(adjusted[1, :, :])
+    return Metric{ISPPA, 2}(adjusted[1, :, :])
 end
 
 
@@ -62,5 +62,5 @@ function intensity_spta(
     E::Excitation,
 ) where {T<:Union{Unitful.Pressure,Number}}
     i = intensity_sppa(p, M, E) * E.duty_cycle # W/cm²
-    return IntensitySpta2D(i)
+    return Metric{ISPTA, 2}(i)
 end

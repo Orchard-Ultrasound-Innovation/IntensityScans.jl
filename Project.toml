@@ -5,6 +5,7 @@ version = "0.1.2"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+HydrophoneCalibrations = "13b29641-ba3c-435b-b4fe-906d24f049a9"
 InstrumentConfig = "2ae464b0-21de-4247-9233-e7c17725eb53"
 RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 TcpInstruments = "aaee30c5-7b57-4441-b61a-ab7186f11903"

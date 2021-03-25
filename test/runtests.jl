@@ -36,5 +36,4 @@ metrics3d = compute_metrics(params, scan3d)
         # plot(scan3d)
     end
     # Write your tests here.
-    @info metrics1d
 end

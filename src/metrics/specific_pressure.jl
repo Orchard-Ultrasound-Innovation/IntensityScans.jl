@@ -3,28 +3,22 @@ function calc_intensity_sppa(pressure, medium, excitation)
     intensities = u"s" * mapreduce(
         p -> intensity(p, medium), +, pressure; dims=1
     ) 
-    return intensities / (excitation.pulse_duration * 10_000u"cm^2/m^2")
+    return squeeze(intensities / (excitation.pulse_duration * 10_000u"cm^2/m^2"))
 end
 
-function intensity_sppa(p::Array{T, 2}, M::Medium, E::Excitation) where 
-    {T<:Unitful.Pressure}
-
-    intensities = calc_intensity_sppa(p, M, E)
-    return IntensitySppa1D(intensities[1, :])
+function intensity_sppa(pressure::PressureArray{2}, medium, excitation)
+    intensities = calc_intensity_sppa(pressure, medium, excitation)
+    return Metric{ISPPA, 1}(intensities)
 end
 
-function intensity_sppa(p::Array{T, 3}, M::Medium, E::Excitation) where 
-    {T<:Unitful.Pressure}
-
-    intensities = calc_intensity_sppa(p, M, E)
-    return IntensitySppa2D(intensities[1, :, :])
+function intensity_sppa(pressure::PressureArray{3}, medium, excitation)
+    intensities = calc_intensity_sppa(pressure, medium, excitation)
+    return Metric{ISPPA, 2}(intensities)
 end
 
-function intensity_sppa(p::Array{T, 4}, M::Medium, E::Excitation) where 
-    {T<:Unitful.Pressure}
-
-    intensities = calc_intensity_sppa(p, M, E)
-    return IntensitySppa3D(intensities[1, :, :, :])
+function intensity_sppa(pressure::PressureArray{4}, medium, excitation)
+    intensities = calc_intensity_sppa(pressure, medium, excitation)
+    return Metric{ISPPA, 3}(intensities)
 end
 
 
@@ -37,23 +31,14 @@ calc_intensity_spta(p, M, E) = intensity_sppa(p, M, E).val * E.duty_cycle # W/cm
     p is expected to be a vector/time series containing only the measured pressure from the excitation pulse.
     Output unit is W/cm².
 """
-function intensity_spta(p::Array{T, 2}, M::Medium, E::Excitation) where 
-    T <: Union{Unitful.Pressure, Number}
+intensity_spta(pressure::PressureArray{2}, medium, excitation) =
+    Metric{ISPTA, 1}(calc_intensity_spta(pressure, medium, excitation))
 
-    return IntensitySpta1D(calc_intensity_spta(p, M, E))
-end
+intensity_spta(pressure::PressureArray{3}, medium, excitation) =
+    Metric{ISPTA, 2}(calc_intensity_spta(pressure, medium, excitation))
 
-function intensity_spta(p::Array{T, 3}, M::Medium, E::Excitation) where
-    T <: Union{Unitful.Pressure, Number}
-
-    return IntensitySpta2D(calc_intensity_spta(p, M, E))
-end
-
-function intensity_spta(p::Array{T, 4}, M::Medium, E::Excitation) where
-    T <: Union{Unitful.Pressure, Number}
-
-    return IntensitySpta3D(calc_intensity_spta(p, M, E))
-end
+intensity_spta(pressure::PressureArray{4}, medium, excitation) =
+    Metric{ISPTA, 3}(calc_intensity_spta(pressure, medium, excitation))
 
 squeeze(A::PressureArray{2}) = A[1, :]
 squeeze(A::PressureArray{3}) = A[1, :, :]

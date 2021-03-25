@@ -1,25 +1,91 @@
-@recipe function plot(scan::Scan1D; label="", title="Scan1D", xguide="Measurement Index / 1", xticks=3, colorbar_title="Voltage / V")
-    time_unit, scaled_time = autoscale_seconds(scan.time)
-    yguide --> "Time / " * time_unit
-    seriestype := :heatmap
-    scaled_time = round.(scaled_time; digits=2)
-    return string.(1:size(scan.coordinates, 2)), string.(scaled_time),  ustrip(scan.waveform)
-end
+@recipe function plot(scan::Scan1D; raw=false, isppa=false, ispta=false)
+    count = 0
+    if raw 
+        count += 1
+    end
+    if isppa 
+        count += 1
+    end
+    if ispta 
+        count += 1
+    end
+    layout := (1, count)
+    if raw
+        @series begin
+        time_unit, scaled_time = autoscale_seconds(scan.time)
 
-@recipe function plot(scan::Scan2D; label="", title="Scan2D", xguide="Measurement Index / 1", yguide="0", xticks=3, colorbar_title="Voltage / V")
-    time_unit, scaled_time = autoscale_seconds(scan.time)
-    yguide --> "Time / " * time_unit
-    seriestype := :heatmap
-    scaled_time = round.(scaled_time; digits=2)
-    waveform = ustrip(scan.waveform)
-    waveform = vcat([waveform[:, :, i] for i in 1:size(waveform, 3)]...)
-    position_idx = []
-    for y in 1:size(scan.coordinates, 3)
-        for x in 1:size(scan.coordinates, 2)
-            push!(position_idx, "($x, $y)")
+        title --> "Scan1D"
+        xguide --> "Measurement Index / 1 ($(scan.axes) axis)"
+        xticks --> 3
+        colorbar_title --> "Voltage / V"
+        yguide --> "Time / " * time_unit
+        seriestype := :heatmap
+
+        scaled_time = round.(scaled_time; digits=2)
+        return string.(1:size(scan.coordinates, 2)), string.(scaled_time),  ustrip(scan.waveform)
         end
     end
-    return position_idx, string.(scaled_time),  waveform
+    if isppa
+        @series begin
+            axes --> scan.axes
+            return scan.metrics.isppa
+        end
+    end
+    if ispta
+        @series begin
+            axes --> scan.axes
+            return scan.metrics.ispta
+        end
+    end
+end
+
+@recipe function plot(scan::Scan2D; raw=false, isppa=false, ispta=false)
+    count = 0
+    if raw 
+        count += 1
+    end
+    if isppa 
+        count += 1
+    end
+    if ispta 
+        count += 1
+    end
+    layout := (1, count)
+    if raw
+        @series begin
+        time_unit, scaled_time = autoscale_seconds(scan.time)
+
+        title --> "Scan2D"
+        xguide --> "Measurement Index / 1",
+        yguide --> "Time / " * time_unit
+        xticks --> 3
+        colorbar_title --> "Voltage / V"
+        seriestype := :heatmap
+
+        scaled_time = round.(scaled_time; digits=2)
+        waveform = ustrip(scan.waveform)
+        waveform = vcat([waveform[:, :, i] for i in 1:size(waveform, 3)]...)
+        position_idx = []
+        for y in 1:size(scan.coordinates, 3)
+            for x in 1:size(scan.coordinates, 2)
+                push!(position_idx, "($x, $y)")
+            end
+        end
+        return position_idx, string.(scaled_time),  waveform
+        end
+    end
+    if isppa
+        @series begin
+            axes --> scan.axes
+            return scan.metrics.isppa
+        end
+    end
+    if ispta
+        @series begin
+            axes --> scan.axes
+            return scan.metrics.ispta
+        end
+    end
 end
 
 @recipe function plot(scan::Scan3D; raw=false, isppa=false, ispta=false,xslice=nothing, yslice=nothing, zslice=nothing)

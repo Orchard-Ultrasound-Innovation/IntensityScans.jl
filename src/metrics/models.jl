@@ -3,6 +3,18 @@ using UnitfulRecipes
 
 const PressureArray{x} = Array{T, x} where T <: Union{Unitful.Pressure, Number}
 
+const ISPPA = :IntensitySPPA
+const ISPTA = :IntensitySPTA
+const MI = :MechanicalIndex
+
+struct Metric{T, D}
+    val
+end
+
+type(a::Metric{ISPPA, T}) where T = "Intensity SPPA $(T)D"
+type(a::Metric{ISPTA, T}) where T = "Intensity SPTA $(T)D"
+type(a::Metric{MI, T}) where T = "Mechanical Index $(T)D"
+
 struct IntensitySppa1D
     val
 end
@@ -39,33 +51,45 @@ struct MechanicalIndex3D
     val
 end
 
-@recipe function plot(sppa::IntensitySppa1D; title="Intensity Sppa 1D", label="intensity", xguide="position")
-   return sppa.val
+@recipe function plot(sppa::Metric{ISPPA, 1}; title=type(sppa), label="intensity", axes="nil")
+    axes == "nil" && error("Keyword missing: axes=\"x\" or axes=\"y\"..")
+    xguide --> "Position ($(axes) axis)"
+    yguide --> "Intensity"
+    return sppa.val
 end
 
-@recipe function plot(spta::IntensitySpta1D; title="Intensity Spta 1D", label="intensity", xguide="position")
-   return spta.val
+@recipe function plot(spta::Metric{ISPTA, 1}; title=type(spta), label="intensity", axes="nil")
+    axes == "nil" && error("Keyword missing: axes=\"x\" or axes=\"y\"..")
+    xguide --> "Position ($(axes) axis)"
+    yguide --> "Intensity"
+    return spta.val
 end
 
-@recipe function plot(sppa::IntensitySppa2D; title="Intensity Sppa 2D", axes=axes) 
+@recipe function plot(sppa::Metric{ISPPA, 2}; title=type(sppa), axes="nil") 
+    axes == "nil" && error("Keyword missing: axes=\"xy\" or axes=\"yz\"..")
     seriestype := :heatmap
-    if !isempty(axes)
-        xguide := "Axis $(axes[1])"
-        yguide := "Axis $(axes[2])"
-    end
+    xguide --> "Axis $(axes[1])"
+    yguide --> "Axis $(axes[2])"
+
     return specific_pressure_plot_helper_2d(sppa.val)
 end
 
-@recipe function plot(spta::IntensitySpta2D; title="Intensity Spta 2D", axes=axes) 
+@recipe function plot(spta::Metric{ISPTA, 2}; title=type(spta), axes="nil") 
+    axes == "nil" && error("Keyword missing: axes=\"xy\" or axes=\"yz\"..")
     seriestype := :heatmap
-    if !isempty(axes)
-        xguide := "Axis $(axes[1])"
-        yguide := "Axis $(axes[2])"
-    end
+    xguide --> "Axis $(axes[1])"
+    yguide --> "Axis $(axes[2])"
     return specific_pressure_plot_helper_2d(spta.val)
 end
 
-@recipe function plot(isppa::IntensitySppa3D; title="Intensity Sppa 3D", xslice = nothing, yslice = nothing, zslice = nothing, axes="xyz") 
+@recipe function plot(
+    isppa::Metric{ISPPA, 3};
+    title=type(isppa),
+    xslice = nothing,
+    yslice = nothing,
+    zslice = nothing,
+    axes="xyz"
+)
     seriestype := :heatmap
     data, axes = specific_pressure_plot_helper_3d(
         isppa.val, 
@@ -74,14 +98,12 @@ end
         zslice, 
         axes
     )
-    if !isempty(axes)
-        xguide := "Axis $(axes[1])"
-        yguide := "Axis $(axes[2])"
-    end
+    xguide --> "Axis $(axes[1])"
+    yguide --> "Axis $(axes[2])"
     return data
 end
 
-@recipe function plot(ispta::IntensitySpta3D; title="Intensity Spta 3D", xslice = nothing, yslice = nothing, zslice = nothing, axes="xyz") 
+@recipe function plot(ispta::Metric{ISPTA, 3}; title=type(ispta), xslice = nothing, yslice = nothing, zslice = nothing, axes="xyz") 
     seriestype := :heatmap
     data, axes = specific_pressure_plot_helper_3d(
         ispta.val, 
@@ -90,10 +112,8 @@ end
         zslice, 
         axes
     )
-    if !isempty(axes)
-        xguide --> "Axis $(axes[1])"
-        yguide --> "Axis $(axes[2])"
-    end
+    xguide --> "Axis $(axes[1])"
+    yguide --> "Axis $(axes[2])"
     return data
 end
 
