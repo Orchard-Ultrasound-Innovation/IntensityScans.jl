@@ -28,21 +28,21 @@
         return string.(1:size(scan.coordinates, 2)), string.(scaled_time),  ustrip(scan.waveform)
         end
     end
+
+    axes --> scan.axes
+
     if isppa
         @series begin
-            axes --> scan.axes
             return scan.metrics.isppa
         end
     end
     if ispta
         @series begin
-            axes --> scan.axes
             return scan.metrics.ispta
         end
     end
     if mi
         @series begin
-            axes --> scan.axes
             return scan.metrics.mechanical_index
         end
     end
@@ -86,21 +86,21 @@ end
         return position_idx, string.(scaled_time),  waveform
         end
     end
+
+    axes --> scan.axes
+
     if isppa
         @series begin
-            axes --> scan.axes
             return scan.metrics.isppa
         end
     end
     if ispta
         @series begin
-            axes --> scan.axes
             return scan.metrics.ispta
         end
     end
     if mi
         @series begin
-            axes --> scan.axes
             return scan.metrics.mechanical_index
         end
     end
@@ -160,27 +160,24 @@ end
         return position_idx, string.(scaled_time),  waveform
         end
     end
+
+    coordinates := scan.coordinates
+    xslice := xslice
+    yslice := yslice
+    zslice := zslice
+
     if isppa
         @series begin
-            xslice := xslice
-            yslice := yslice
-            zslice := zslice
             return scan.metrics.isppa
         end
     end
     if ispta
         @series begin
-            xslice := xslice
-            yslice := yslice
-            zslice := zslice
             return scan.metrics.ispta
         end
     end
     if mi
         @series begin
-            xslice := xslice
-            yslice := yslice
-            zslice := zslice
             return scan.metrics.mechanical_index
         end
     end
