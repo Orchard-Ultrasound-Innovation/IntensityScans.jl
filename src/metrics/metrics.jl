@@ -2,6 +2,7 @@ using HydrophoneCalibrations
 
 include("tmp_metrics.jl")
 include("models.jl")
+include("plots.jl")
 include("specific_pressure.jl")
 include("mechanical_index.jl")
 
