@@ -1,7 +1,6 @@
 using HydrophoneCalibrations
 
 include("tmp_metrics.jl")
-include("models.jl")
 include("plots.jl")
 include("specific_pressure.jl")
 include("mechanical_index.jl")
@@ -9,7 +8,6 @@ include("mechanical_index.jl")
 function get_max(coordinates, data)
     max, max_coor = findmax(data)
     return max, coordinates[:, max_coor]
-    
 end
 
 function get_metrics(params::ScanParameters, scan::Union{Scan1D, Scan2D, Scan3D})

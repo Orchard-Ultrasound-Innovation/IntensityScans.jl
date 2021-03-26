@@ -8,11 +8,11 @@ function stub_intensity_scan()
 end
 
 params = ScanParameters(
-    Medium(), 
-    Excitation(), 
-    15e6, 
-    :Onda_HGL0200_2322, 
-    :Onda_AH2020_1238_20dB,
+    medium = Medium(), 
+    excitation = Excitation(), 
+    f0 = 15e6, 
+    hydrophone_id = :Onda_HGL0200_2322, 
+    preamp_id = :Onda_AH2020_1238_20dB,
 )
 
 scan1d, scan2d, scan3d = stub_intensity_scan()

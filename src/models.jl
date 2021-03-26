@@ -1,29 +1,42 @@
 using RecipesBase
 
-struct ScanParameters
-    medium
-    excitation
-    hydrophone_id
-    preamp_id
-    f0
-    calibration_factor
+const PressureArray{x} = Array{T, x} where T <: Union{Unitful.Pressure, Number}
+
+squeeze(A::PressureArray{2}) = A[1, :]
+squeeze(A::PressureArray{3}) = A[1, :, :]
+squeeze(A::PressureArray{4}) = A[1, :, :, :]
+
+const ISPPA = :IntensitySPPA
+const ISPTA = :IntensitySPTA
+const MI = :MechanicalIndex
+
+struct Metric{T, D}
+    val::AbstractArray
 end
 
-function ScanParameters(medium, excitation, f0, hydrophone_id, preamp_id = nothing)
-    factor = volt_to_pressure(f0, hydrophone_id, preamp_id)
-    return ScanParameters(medium, excitation, f0, hydrophone_id, preamp_id, factor)
+type(a::Metric{ISPPA, T}) where T = "Intensity SPPA $(T)D"
+type(a::Metric{ISPTA, T}) where T = "Intensity SPTA $(T)D"
+type(a::Metric{MI, T}) where T = "Mechanical Index $(T)D"
+
+Base.@kwdef struct ScanParameters
+    medium::Any
+    excitation::Any
+    f0::Float64
+    hydrophone_id::Symbol
+    preamp_id::Union{Symbol, Nothing} = nothing
+    calibration_factor::typeof(1.0u"Pa/V") = volt_to_pressure(f0, hydrophone_id, preamp_id)
 end
 
 # TODO: Types/Make immutable
 struct ScanMetric
-    params
-    pressure
-    isppa
-    isppa_max
-    ispta
-    ispta_max
-    mechanical_index
-    mechanical_index_max
+    params::ScanParameters
+    pressure::PressureArray
+    isppa::Metric{ISPPA}
+    isppa_max::Tuple{Unitful.Quantity, Vector{Float64}}
+    ispta::Metric{ISPTA}
+    ispta_max::Tuple{Unitful.Quantity, Vector{Float64}}
+    mechanical_index::Metric{MI}
+    mechanical_index_max::Tuple{Float64, Vector{Float64}}
 end
 
 """
