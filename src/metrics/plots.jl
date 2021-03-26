@@ -175,6 +175,10 @@ function plot_3d_metric(
     axes,
     coordinates,
 )
+    if isnothing(coordinates)
+        error("You must set coordinates from scan in keyword arg:
+              ;coordinates=scan.coordinates")
+    end
     if slice isa Unitful.Length
         slice = ustrip(uconvert(u"m", slice))
         positions = get_axis_positions(Val(slice_axis), coordinates)
@@ -192,7 +196,7 @@ end
 function plot_2d_metric(data, coordinates, axes)
     if isnothing(coordinates)
         error("You must set coordinates from scan in keyword arg:
-              ;coordinates=scan2d.coordinates")
+              ;coordinates=scan.coordinates")
     end
     first_axis, second_axis = Val(Symbol(axes[1])), Val(Symbol(axes[2]))
     return string.(get_axis_positions(first_axis, coordinates)),
