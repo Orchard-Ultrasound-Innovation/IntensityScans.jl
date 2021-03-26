@@ -90,25 +90,34 @@ end
     return specific_pressure_plot_helper_2d(metric.val, coordinates, axes)
 end
 
-@recipe function plot(metric::Metric{MI, 2}; title=type(metric), axes="nil", coordinates = nothing,)
+@recipe function plot(
+    metric::Metric{MI, 2}; 
+    title=type(metric), 
+    axes="nil", 
+    coordinates = nothing,
+)
     axes == "nil" && error("Keyword missing: axes=\"xy\" or axes=\"yz\"..")
+    if isnothing(coordinates)
+        error("You must set coordinates from scan in keyword arg:
+              ;coordinates=scan2d.coordinates")
+    end
     seriestype := :heatmap
     xguide --> "Axis $(axes[1])"
     yguide --> "Axis $(axes[2])"
-    return specific_pressure_plot_helper_2d(metric.val)
+    return specific_pressure_plot_helper_2d(metric.val, coordinates, axes)
 end
 
 @recipe function plot(
     metric::Metric{ISPPA, 3};
     title=type(metric),
-    xslice = nothing,
-    yslice = nothing,
-    zslice = nothing,
+    xslice = NaN, 
+    yslice = NaN, 
+    zslice = NaN, 
     coordinates = nothing,
     axes="xyz"
 )
     seriestype := :heatmap
-    data, axes = specific_pressure_plot_helper_3d(
+    data, axes = plot_3d_metric(
         metric.val, 
         xslice, 
         yslice, 
@@ -124,14 +133,14 @@ end
 @recipe function plot(
     metric::Metric{ISPTA, 3}; 
     title=type(metric), 
-    xslice = nothing, 
-    yslice = nothing, 
-    zslice = nothing, 
+    xslice = NaN, 
+    yslice = NaN, 
+    zslice = NaN, 
     coordinates = nothing,
     axes="xyz"
 )
     seriestype := :heatmap
-    data, axes = specific_pressure_plot_helper_3d(
+    data, axes = plot_3d_metric(
         metric.val, 
         xslice, 
         yslice, 
@@ -147,14 +156,14 @@ end
 @recipe function plot(
     metric::Metric{MI, 3}; 
     title=type(metric), 
-    xslice = nothing, 
-    yslice = nothing, 
-    zslice = nothing, 
+    xslice = NaN, 
+    yslice = NaN, 
+    zslice = NaN, 
     coordinates = nothing,
     axes="xyz",
 )
     seriestype := :heatmap
-    data, axes = specific_pressure_plot_helper_3d(
+    data, axes = plot_3d_metric(
         metric.val, 
         xslice, 
         yslice, 
@@ -167,7 +176,53 @@ end
     return data
 end
 
+function plot_3d_metric(
+    data, 
+    xslice, 
+    yslice, 
+    zslice, 
+    axes,
+    coordinates,
+)
+    if isnothing(coordinates)
+        error("You must set coordinates from scan in keyword arg:
+              ;coordinates=scan3d.coordinates")
+    end
+
+    slice, slice_axis = get_slice(xslice, yslice, zslice)
+    if slice isa Unitful.Length
+        slice = ustrip(uconvert(u"m", slice))
+        positions = get_axis_positions(Val(slice_axis), coordinates)
+        slice = findnearest(positions, slice)
+    end
+    slice_axis_size = get_axis_size(Val(slice_axis), data)
+    if slice < 1 || slice > slice_axis_size
+        error("$(slice_axis)slice must be between 1 and $slice_axis_size")
+    end
+    data_2d, axes = slice_data(Val(slice_axis), slice, data, axes)
+    plot_data = specific_pressure_plot_helper_2d(data_2d, coordinates, axes)
+    return plot_data, axes
+end
+
+slice_data(::Val{:x}, slice, data, axes) = data[slice, :, :], axes[2:3]
+slice_data(::Val{:y}, slice, data, axes) = data[:, slice, :], axes[1:2:3]
+slice_data(::Val{:z}, slice, data, axes) = data[:, :, slice], axes[1:2]
+
+get_axis_size(::Val{:x}, data) = size(data, 1)
+get_axis_size(::Val{:y}, data) = size(data, 2)
+get_axis_size(::Val{:z}, data) = size(data, 3)
+
 findnearest(A::AbstractArray,t) = findmin(abs.(A.-t))[2]
+
+function get_slice(xslice, yslice, zslice)
+    if reduce(+, isnan.([xslice, yslice, zslice])) != 2
+        error("Only one of the keyword arguments must be set:
+              xslice, yslice, or zslice")
+    end
+    !isnan(xslice) && return xslice, :x
+    !isnan(yslice) && return yslice, :y
+    return zslice, :z
+end
 
 #function position_to_coordinate_index
 

@@ -114,9 +114,9 @@ end
     isppa=false,
     ispta=false,
     mi=false,
-    xslice=nothing,
-    yslice=nothing,
-    zslice=nothing
+    xslice=NaN,
+    yslice=NaN,
+    zslice=NaN
 )
     count = 0
     if raw 
