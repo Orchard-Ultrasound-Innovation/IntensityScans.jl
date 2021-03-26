@@ -1,29 +1,71 @@
 using RecipesBase
 using UnitfulRecipes
 
-@recipe function plot(metric::Metric{ISPPA, 1}; title=type(metric), label="intensity", axes="nil")
+@recipe function plot(
+    metric::Metric{ISPPA, 1}; 
+    title=type(metric), 
+    label="intensity", 
+    axes="nil",
+    coordinates = nothing,
+)
     axes == "nil" && error("Keyword missing: axes=\"x\" or axes=\"y\"..")
-    xguide --> "Position ($(axes) axis)"
+    if isnothing(coordinates)
+        error("You must set coordinates from scan in keyword arg:
+              ;coordinates=scan1d.coordinates")
+    end
+    axis = Symbol(axes)
+    xguide --> "Position ($(axis) axis)"
     yguide --> "Intensity"
-    return metric.val
+    return string.(get_axis_positions(Val(axis), coordinates)), metric.val
 end
 
-@recipe function plot(metric::Metric{ISPTA, 1}; title=type(metric), label="intensity", axes="nil")
+@recipe function plot(
+    metric::Metric{ISPTA, 1}; 
+    title=type(metric), 
+    label="intensity", 
+    axes="nil",
+    coordinates = nothing,
+)
     axes == "nil" && error("Keyword missing: axes=\"x\" or axes=\"y\"..")
+    if isnothing(coordinates)
+        error("You must set coordinates from scan in keyword arg:
+              ;coordinates=scan1d.coordinates")
+    end
+    axis = Symbol(axes)
     xguide --> "Position / Meters ($(axes) axis)"
     yguide --> "Intensity"
-    return metric.val
+    return string.(get_axis_positions(Val(axis), coordinates)), metric.val
 end
 
-@recipe function plot(metric::Metric{MI, 1}; title=type(metric), label="Mechanical Index", axes="nil")
+@recipe function plot(
+    metric::Metric{MI, 1}; 
+    title=type(metric), 
+    label="Mechanical Index", 
+    axes="nil",
+    coordinates = nothing,
+)
     axes == "nil" && error("Keyword missing: axes=\"x\" or axes=\"y\"..")
-    xguide --> "Position / Meters ($(axes) axis)"
+    if isnothing(coordinates)
+        error("You must set coordinates from scan in keyword arg:
+              ;coordinates=scan1d.coordinates")
+    end
+    axis = Symbol(axes)
+    xguide --> "Position / Meters ($(axis) axis)"
     yguide --> "Mechanical Index"
-    return metric.val
+    return string.(get_axis_positions(Val(axis), coordinates)), metric.val
 end
 
-@recipe function plot(metric::Metric{ISPPA, 2}; title=type(metric), axes="nil", coordinates = nothing,) 
+@recipe function plot(
+    metric::Metric{ISPPA, 2}; 
+    title=type(metric), 
+    axes="nil", 
+    coordinates = nothing,
+)
     axes == "nil" && error("Keyword missing: axes=\"xy\" or axes=\"yz\"..")
+    if isnothing(coordinates)
+        error("You must set coordinates from scan in keyword arg:
+              ;coordinates=scan2d.coordinates")
+    end
     seriestype := :heatmap
     xguide --> "Position / Meters ($(axes[1]) axis)"
     yguide --> "Position / Meters ($(axes[2]) axis)"
@@ -31,7 +73,16 @@ end
     return specific_pressure_plot_helper_2d(metric.val, coordinates, axes)
 end
 
-@recipe function plot(metric::Metric{ISPTA, 2}; title=type(metric), axes="nil", coordinates = nothing,) 
+@recipe function plot(
+    metric::Metric{ISPTA, 2}; 
+    title=type(metric), 
+    axes="nil", 
+    coordinates = nothing,
+)
+    if isnothing(coordinates)
+        error("You must set coordinates from scan in keyword arg:
+              ;coordinates=scan2d.coordinates")
+    end
     axes == "nil" && error("Keyword missing: axes=\"xy\" or axes=\"yz\"..")
     seriestype := :heatmap
     xguide --> "Position / Meters ($(axes[1]) axis)"
