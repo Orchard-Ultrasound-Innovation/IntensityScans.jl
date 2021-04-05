@@ -141,7 +141,13 @@ function scan_single_axis(
             Scanning $axis-direction: $scan_index/$num_scans iterations
             """
         end
+
         move_func(scanner.xyz, positions[scan_index])
+        sleep(scanner.post_move_delay)
+
+        scanner.trigger_function()
+
+        sleep(scanner.precapture_delay)
         data = get_data(scanner.scope, scanner.channel)
 
         if scan_index == 1
@@ -151,8 +157,6 @@ function scan_single_axis(
         if data.info.num_points != scanner.sample_size
             error("Scope sample size is different from scanner")
         end
-
-        # TODO: if remove_amount_data != 0 trim beginning and end of data
 
         scan_info.waveform[:, scan_index] = data.volt
         scan_info.coordinates[:, scan_index] = pos_xyz(scanner.xyz)

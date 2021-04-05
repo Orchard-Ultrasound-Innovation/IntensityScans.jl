@@ -1,6 +1,10 @@
+using Base: @kwdef 
 using RecipesBase
 
 const PressureArray{x} = Array{T, x} where T <: Union{Unitful.Pressure, Number}
+const Volt = typeof(1.0u"V")
+const Meter = typeof(1.0u"m")
+
 
 squeeze(A::PressureArray{2}) = A[1, :]
 squeeze(A::PressureArray{3}) = A[1, :, :]
@@ -18,7 +22,7 @@ type(a::Metric{ISPPA, T}) where T = "Intensity SPPA $(T)D"
 type(a::Metric{ISPTA, T}) where T = "Intensity SPTA $(T)D"
 type(a::Metric{MI, T}) where T = "Mechanical Index $(T)D"
 
-Base.@kwdef struct ScanParameters
+@kwdef struct ScanParameters
     medium::Any
     excitation::Any
     f0::Float64
@@ -32,11 +36,11 @@ struct ScanMetric
     params::ScanParameters
     pressure::PressureArray
     isppa::Metric{ISPPA}
-    isppa_max::Tuple{Unitful.Quantity, Vector{Float64}}
+    isppa_max::Tuple{Unitful.Quantity, Vector{Meter}}
     ispta::Metric{ISPTA}
-    ispta_max::Tuple{Unitful.Quantity, Vector{Float64}}
+    ispta_max::Tuple{Unitful.Quantity, Vector{Meter}}
     mechanical_index::Metric{MI}
-    mechanical_index_max::Tuple{Float64, Vector{Float64}}
+    mechanical_index_max::Tuple{Float64, Vector{Meter}}
 end
 
 """
@@ -52,25 +56,25 @@ Ex.
 lts = initialize(ThorlabsLTS150)
 scope = initialize(Scope350MHz)
 # Sample size 100, read from scope on channel 1
-hydrophone = IntensityScan(lts, scope, 100, 1)
+hydrophone = IntensityScan(xyz = lts, scope scope, channel = 1, sample_size = 100)
 ```
 """
-struct IntensityScan 
-    xyz::ThorlabsLTS150
+@kwdef struct IntensityScan 
+    xyz::T where T <: LTS
     scope::TcpInstruments.Instr{T} where T <: Oscilloscope
     channel::Int64
     sample_size::Int64
-    # TODO calibration::Calibration
+    post_move_delay::Int64 = 0
+    precapture_delay::Int64 = 0
+    trigger_function::Function = () -> nothing
 end
-
-const Volt = typeof(1.0u"V")
 
 struct Scan1D
     axes::String
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     waveform::Array{Volt, 2}
-    coordinates::Array{Float64, 2}
+    coordinates::Array{Meter, 2}
     metrics::Union{Nothing, ScanMetric}
 end
 
@@ -85,7 +89,7 @@ function Scan1D(
         samples_per_waveform,
         number_of_scanning_points_first_axis,
     )
-    coordinates = zeros(
+    coordinates = u"m" * zeros(
         3, # number of coordinates. One for each axis: xyz
         number_of_scanning_points_first_axis,
     )
@@ -97,7 +101,7 @@ struct Scan2D
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     waveform::Array{Volt, 3}
-    coordinates::Array{Float64, 3}
+    coordinates::Array{Meter, 3}
     metrics::Union{Nothing, ScanMetric}
 end
 
@@ -114,7 +118,7 @@ function Scan2D(
         number_of_scans_first_axis,
         number_of_scans_second_axis,
     )
-    coordinates = zeros(
+    coordinates = u"m" * zeros(
         3, # number of coordinates. One for each axis: xyz
         number_of_scans_first_axis,
         number_of_scans_second_axis,
@@ -127,7 +131,7 @@ struct Scan3D
     scope_info::TcpInstruments.ScopeInfo
     time::Array{Float64, 1}
     waveform::Array{Volt, 4}
-    coordinates::Array{Float64, 4}
+    coordinates::Array{Meter, 4}
     metrics::Union{Nothing, ScanMetric}
 end
 
@@ -146,7 +150,7 @@ function Scan3D(
         number_of_scans_second_axis,
         number_of_scans_third_axis,
     )
-    coordinates = zeros(
+    coordinates = u"m" * zeros(
         3, # number of coordinates. One for each axis: xyz
         number_of_scans_first_axis,
         number_of_scans_second_axis,

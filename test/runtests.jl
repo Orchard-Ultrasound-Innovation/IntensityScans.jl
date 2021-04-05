@@ -1,6 +1,8 @@
 using IntensityScans
+using TcpInstruments; using ThorlabsLTStage; using Unitful
 using Test
 
+if false
 function stub_intensity_scan()
     scans = ["scan1d.jld2", "scan2d.jld2", "scan3d.jld2"]
     scans = joinpath.(@__DIR__, scans)
@@ -20,6 +22,33 @@ scan1d, scan2d, scan3d = stub_intensity_scan()
 metrics1d = compute_metrics(params, scan1d)
 metrics2d = compute_metrics(params, scan2d)
 metrics3d = compute_metrics(params, scan3d)
+end
+
+scope = initialize(TcpInstruments.FakeDSOX4034A)
+lts = initialize(ThorlabsLTStage.FakeLTS)
+
+scanner = IntensityScan(
+    xyz = lts, 
+    scope = scope, 
+    channel = 1, 
+    sample_size =TcpInstruments.num_samples(scope)
+)
+
+wave_x = scan_x(scanner, [0u"m", 0.1u"m"], 2)
+wave_xy = scan_xy(scanner, [0u"m", 0.1u"m"], 2, [0u"m", 0.1u"m"], 2)
+wave_xyz = scan_xyz(scanner, [0u"m", 0.1u"m"], 2, [0u"m", 0.1u"m"], 2, [0u"m", 0.1u"m"], 2)
+
+params = ScanParameters(
+    medium = Medium(), 
+    excitation = Excitation(), 
+    f0 = 15e6, 
+    hydrophone_id = :Onda_HGL0200_2322, 
+    preamp_id = :Onda_AH2020_1238_20dB,
+)
+
+wave_x = compute_metrics(params, wave_x)
+wave_xy = compute_metrics(params, wave_xy)
+wave_xyz = compute_metrics(params,  wave_xyz)
 
 
 @testset "IntensityScans.jl" begin
