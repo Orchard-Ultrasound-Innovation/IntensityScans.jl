@@ -31,6 +31,7 @@ scanner = IntensityScan(
     xyz = lts, 
     scope = scope, 
     channel = 1, 
+    precapture_delay = 0u"s",
     sample_size =TcpInstruments.num_samples(scope)
 )
 

@@ -9,6 +9,7 @@ struct Medium
     density::kg_per_m3 # density in kg/m³
     c::m_per_s # speed of sound in m/s
 end
+
 Medium() = Medium(1000.0u"kg/m^3", 1480.0u"m/s")
 
 struct Excitation

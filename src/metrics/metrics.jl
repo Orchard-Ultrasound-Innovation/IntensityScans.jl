@@ -36,6 +36,7 @@ end
 
 function compute_metrics(params::ScanParameters, scan::Scan1D)
     return Scan1D(
+        scan.version,
         scan.axes,
         scan.scope_info,
         scan.time,
@@ -47,6 +48,7 @@ end
 
 function compute_metrics(params::ScanParameters, scan::Scan2D)
     return Scan2D(
+        scan.version,
         scan.axes,
         scan.scope_info,
         scan.time,
@@ -58,6 +60,7 @@ end
 
 function compute_metrics(params::ScanParameters, scan::Scan3D)
     return Scan3D(
+        scan.version,
         scan.axes,
         scan.scope_info,
         scan.time,

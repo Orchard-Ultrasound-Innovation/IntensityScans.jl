@@ -12,7 +12,19 @@
     if mi 
         count += 1
     end
-    layout := (1, count)
+    if count == 0
+        if isnothing(scan)
+            raw = true
+            count = 1
+        else
+            isppa = true
+            ispta = true
+            mi = true
+            count = 3
+            layout --> (3,2,1)
+        end
+    end
+    layout --> (count, 1)
     if raw
         @series begin
         time_unit, scaled_time = autoscale_seconds(scan.time)
@@ -63,7 +75,19 @@ end
     if mi 
         count += 1
     end
-    layout := (1, count)
+    if count == 0
+        if isnothing(scan)
+            raw = true
+            count = 1
+        else
+            isppa = true
+            ispta = true
+            mi = true
+            count = 3
+            layout --> (3,2,1)
+        end
+    end
+    layout --> (count, 1)
     if raw
         @series begin
         time_unit, scaled_time = autoscale_seconds(scan.time)
@@ -91,6 +115,11 @@ end
     axes --> scan.axes
     coordinates := scan.coordinates
 
+    if mi
+        @series begin
+            return scan.metrics.mechanical_index
+        end
+    end
     if isppa
         @series begin
             return scan.metrics.isppa
@@ -99,11 +128,6 @@ end
     if ispta
         @series begin
             return scan.metrics.ispta
-        end
-    end
-    if mi
-        @series begin
-            return scan.metrics.mechanical_index
         end
     end
 end
@@ -131,7 +155,19 @@ end
     if mi 
         count += 1
     end
-    layout := (1, count)
+    if count == 0
+        if isnothing(scan)
+            raw = true
+            count = 1
+        else
+            isppa = true
+            ispta = true
+            mi = true
+            count = 3
+            layout --> (3,2,1)
+        end
+    end
+    layout --> (count, 1)
     if raw
         @series begin
         time_unit, scaled_time = autoscale_seconds(scan.time)
@@ -168,6 +204,11 @@ end
     yslice := yslice
     zslice := zslice
 
+    if mi
+        @series begin
+            return scan.metrics.mechanical_index
+        end
+    end
     if isppa
         @series begin
             return scan.metrics.isppa
@@ -176,11 +217,6 @@ end
     if ispta
         @series begin
             return scan.metrics.ispta
-        end
-    end
-    if mi
-        @series begin
-            return scan.metrics.mechanical_index
         end
     end
 end

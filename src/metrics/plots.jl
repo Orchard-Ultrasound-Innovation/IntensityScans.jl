@@ -14,7 +14,7 @@ using UnitfulRecipes
               ;coordinates=scan1d.coordinates")
     end
     axis = Symbol(axes)
-    xguide --> "Position ($(axis) axis)"
+    xguide --> "Position / m ($(axis) axis)"
     yguide --> "Intensity"
     return string.(get_axis_positions(Val(axis), coordinates)), metric.val
 end
@@ -32,7 +32,7 @@ end
               ;coordinates=scan1d.coordinates")
     end
     axis = Symbol(axes)
-    xguide --> "Position / Meters ($(axes) axis)"
+    xguide --> "Position / m ($(axes) axis)"
     yguide --> "Intensity"
     return string.(get_axis_positions(Val(axis), coordinates)), metric.val
 end
@@ -50,7 +50,7 @@ end
               ;coordinates=scan1d.coordinates")
     end
     axis = Symbol(axes)
-    xguide --> "Position / Meters ($(axis) axis)"
+    xguide --> "Position / m ($(axis) axis)"
     yguide --> "Mechanical Index"
     return string.(get_axis_positions(Val(axis), coordinates)), metric.val
 end
@@ -63,8 +63,8 @@ end
 )
     axes == "nil" && error("Keyword missing: axes=\"xy\" or axes=\"yz\"..")
     seriestype := :heatmap
-    xguide --> "Position / Meters ($(axes[1]) axis)"
-    yguide --> "Position / Meters ($(axes[2]) axis)"
+    xguide --> "Position / m ($(axes[1]) axis)"
+    yguide --> "Position / m ($(axes[2]) axis)"
 
     return plot_2d_metric(metric.val, coordinates, axes)
 end
@@ -77,8 +77,8 @@ end
 )
     axes == "nil" && error("Keyword missing: axes=\"xy\" or axes=\"yz\"..")
     seriestype := :heatmap
-    xguide --> "Position / Meters ($(axes[1]) axis)"
-    yguide --> "Position / Meters ($(axes[2]) axis)"
+    xguide --> "Position / m ($(axes[1]) axis)"
+    yguide --> "Position / m ($(axes[2]) axis)"
 
     return plot_2d_metric(metric.val, coordinates, axes)
 end
@@ -115,8 +115,8 @@ end
         coordinates,
     )
     title --> type(metric) * " ($(slice_axis)slice $slice)"
-    xguide --> "Position / Meters ($(axes[1]) axis)"
-    yguide --> "Position / Meters ($(axes[2]) axis)"
+    xguide --> "Position / m ($(axes[1]) axis)"
+    yguide --> "Position / m ($(axes[2]) axis)"
     return data
 end
 
@@ -138,8 +138,8 @@ end
         coordinates,
     )
     title --> type(metric) * " ($(slice_axis)slice $slice)"
-    xguide --> "Position / Meters ($(axes[1]) axis)"
-    yguide --> "Position / Meters ($(axes[2]) axis)"
+    xguide --> "Position / m ($(axes[1]) axis)"
+    yguide --> "Position / m ($(axes[2]) axis)"
     return data
 end
 
@@ -161,8 +161,8 @@ end
         coordinates,
     )
     title --> type(metric) * " ($(slice_axis)slice $slice)"
-    xguide --> "Position / Meters ($(axes[1]) axis)"
-    yguide --> "Position / Meters ($(axes[2]) axis)"
+    xguide --> "Position / m ($(axes[1]) axis)"
+    yguide --> "Position / m ($(axes[2]) axis)"
     return data
 end
 
