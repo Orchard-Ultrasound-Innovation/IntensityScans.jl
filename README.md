@@ -13,29 +13,57 @@ This package relies on the following packages. To learn more about
 configuring and using these packages:
 - [ThorlabsLTStage](https://github.com/Orchard-Ultrasound-Innovation/ThorlabsLTStage.jl)
 - [TcpInstruments](https://github.com/Orchard-Ultrasound-Innovation/TcpInstruments.jl)
+- [HydrophoneCalibrations.jl](https://github.com/Orchard-Ultrasound-Innovation/HydrophoneCalibrations.jl) 
 
 ```julia
 using IntensityScans
-# You only need to load the configs if you have aliases you want to access
-using TcpInstruments; TcpInstruments.load_config()
-using ThorlabsLTStage; ThorlabsLTStage.load_config()
+using IntensityScans.ThorlabsLTStage
+using IntensityScans.TcpInstruments
+using IntensityScans.Unitful
 
-lts = initialize(ThorlabsLTS150)
+
+lts = initialize(LTS)
 scope = initialize(AgilentDSOX4034A)
 channel = 1
 number_of_samples = get_data(scope, channel).info.num_points
 
 scanner = IntensityScan(lts, scope, channel, number_of_samples)
+scanner = IntensityScan(
+    xyz = lts, 
+    scope = scope, 
+    channel = 1, 
+    precapture_delay = 0u"µs",
+    sample_size = 65104,
+    postmove_delay = 0u"s",
+)
 
-info_x   = scan_x(scanner,   [0, .05], 5)
-info_xy  = scan_xy(scanner,  [0, .05], 5, [0, 0.02], 2)
-info_xyz = scan_xyz(scanner, [0, .05], 5, [0, 0.02], 2, [0, 0.2], 2)
+wave_x = scan_x(scanner, [0u"m", 100u"mm"], 5)
+wave_xy = scan_xy(scanner, [0u"m", 0.1u"m"], 5, [0u"mm", 0.1u"m"], 7)
+wave_xyz = scan_xyz(scanner, [0u"m", 0.1u"m"], 3, [0u"m", 0.1u"m"], 3, [0u"m", 0.1u"m"], 3)
 
-save(info_x)
-save(info_xy; filename="/home/user/scanfolder/myscan")
-save(info_xyz; format=:matlab)
+save(wave_x)
+save(wave_xy; filename="/home/user/scanfolder/myscan")
+save(wave_xyz; format=:matlab)
 
 new_info_xy = load("home/user/scanfolder/myscan")
 
+params = ScanParameters(
+    medium = Medium(),
+    excitation = Excitation(),
+    f0 = 15e6,
+    hydrophone_id = :Onda_HGL0200_2322,
+    preamp_id = :Onda_AH2020_1238_20dB,
+)
+
+new_info_xy = compute_metrics(new_info_xy)
+wave_xyz = compute_metrics(wave_xyz, params)
+
+plot(wave_x)
+
 plot(new_info_xy)
+plot(new_info_xy; isppa=true)
+plot(new_info_xy; ispta=true)
+plot(new_info_xy; mi=true)
+
+plot(wave_xyz; xslice=0u"m", ispta=true, mi=true)
 ```

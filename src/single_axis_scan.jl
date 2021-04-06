@@ -143,11 +143,11 @@ function scan_single_axis(
         end
 
         move_func(scanner.xyz, positions[scan_index])
-        sleep(ustrip(scanner.post_move_delay))
+        sleep(raw(scanner.post_move_delay))
 
         scanner.trigger_function()
 
-        sleep(ustrip(scanner.precapture_delay))
+        sleep(raw(scanner.precapture_delay))
         data = get_data(scanner.scope, scanner.channel)
 
         if scan_index == 1

@@ -18,9 +18,9 @@ struct Metric{T, D}
     val::AbstractArray
 end
 
-type(a::Metric{ISPPA, T}) where T = "Intensity SPPA $(T)D"
-type(a::Metric{ISPTA, T}) where T = "Intensity SPTA $(T)D"
-type(a::Metric{MI, T}) where T = "Mechanical Index $(T)D"
+type(a::Metric{ISPPA, T}) where T = "SPPA"
+type(a::Metric{ISPTA, T}) where T = "SPTA"
+type(a::Metric{MI, T}) where T = "Mechanical Index"
 
 @kwdef struct ScanParameters
     medium::Any
@@ -31,7 +31,6 @@ type(a::Metric{MI, T}) where T = "Mechanical Index $(T)D"
     calibration_factor::typeof(1.0u"Pa/V") = volt_to_pressure(f0, hydrophone_id, preamp_id)
 end
 
-# TODO: Types/Make immutable
 struct ScanMetric
     params::ScanParameters
     pressure::PressureArray
@@ -56,7 +55,7 @@ Ex.
 lts = initialize(ThorlabsLTS150)
 scope = initialize(Scope350MHz)
 # Sample size 100, read from scope on channel 1
-hydrophone = IntensityScan(xyz = lts, scope scope, channel = 1, sample_size = 100)
+hydrophone = IntensityScan(xyz = lts, scope scope, channel = 1, sample_size = 100, precapture_delay=0u"s")
 ```
 """
 @kwdef struct IntensityScan 

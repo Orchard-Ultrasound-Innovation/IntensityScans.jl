@@ -10,7 +10,7 @@ function get_max(coordinates, data)
     return max, coordinates[:, max_coor]
 end
 
-function get_metrics(params::ScanParameters, scan::Union{Scan1D, Scan2D, Scan3D})
+function get_metrics(scan::Union{Scan1D, Scan2D, Scan3D}, params::ScanParameters)
     voltage = scan.waveform
     pressure = voltage * params.calibration_factor
 
@@ -34,7 +34,7 @@ function get_metrics(params::ScanParameters, scan::Union{Scan1D, Scan2D, Scan3D}
      )
 end
 
-function compute_metrics(params::ScanParameters, scan::Scan1D)
+function compute_metrics(scan::Scan1D, params::ScanParameters)
     return Scan1D(
         scan.version,
         scan.axes,
@@ -42,11 +42,11 @@ function compute_metrics(params::ScanParameters, scan::Scan1D)
         scan.time,
         scan.waveform,
         scan.coordinates,
-        get_metrics(params, scan),
+        get_metrics(scan, params),
     )
 end
 
-function compute_metrics(params::ScanParameters, scan::Scan2D)
+function compute_metrics(scan::Scan2D, params::ScanParameters)
     return Scan2D(
         scan.version,
         scan.axes,
@@ -54,11 +54,11 @@ function compute_metrics(params::ScanParameters, scan::Scan2D)
         scan.time,
         scan.waveform,
         scan.coordinates,
-        get_metrics(params, scan),
+        get_metrics(scan, params),
     )
 end
 
-function compute_metrics(params::ScanParameters, scan::Scan3D)
+function compute_metrics(scan::Scan3D, params::ScanParameters)
     return Scan3D(
         scan.version,
         scan.axes,
@@ -66,6 +66,6 @@ function compute_metrics(params::ScanParameters, scan::Scan3D)
         scan.time,
         scan.waveform,
         scan.coordinates,
-        get_metrics(params, scan),
+        get_metrics(scan, params),
     )
 end

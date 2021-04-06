@@ -47,9 +47,9 @@ params = ScanParameters(
     preamp_id = :Onda_AH2020_1238_20dB,
 )
 
-wave_x = compute_metrics(params, wave_x)
-wave_xy = compute_metrics(params, wave_xy)
-wave_xyz = compute_metrics(params,  wave_xyz)
+wave_x = compute_metrics(wave_x, params)
+wave_xy = compute_metrics(wave_xy, params)
+wave_xyz = compute_metrics(wave_xyz, params)
 
 
 @testset "IntensityScans.jl" begin

@@ -3,6 +3,7 @@ module IntensityScans
 using TcpInstruments
 using ThorlabsLTStage
 using Unitful
+using Unitful: s, ms, mm, m
 
 export IntensityScan
 export Scan1D, Scan2D, Scan3D

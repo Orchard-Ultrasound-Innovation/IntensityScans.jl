@@ -13,10 +13,9 @@ using UnitfulRecipes
         error("You must set coordinates from scan in keyword arg:
               ;coordinates=scan1d.coordinates")
     end
-    axis = Symbol(axes)
-    xguide --> "$(axis)-axis / mm"
+    xguide --> "$(axes)-axis / mm"
     yguide --> "Intensity"
-    return string.(get_axis_positions(Val(axis), coordinates)), metric.val
+    return display_axis(coordinates, axes), metric.val
 end
 
 @recipe function plot(
@@ -31,10 +30,9 @@ end
         error("You must set coordinates from scan in keyword arg:
               ;coordinates=scan1d.coordinates")
     end
-    axis = Symbol(axes)
     xguide --> "Position / m ($(axes) axis)"
     yguide --> "Intensity"
-    return string.(get_axis_positions(Val(axis), coordinates)), metric.val
+    return display_axis(coordinates, axes), metric.val
 end
 
 @recipe function plot(
@@ -49,10 +47,9 @@ end
         error("You must set coordinates from scan in keyword arg:
               ;coordinates=scan1d.coordinates")
     end
-    axis = Symbol(axes)
-    xguide --> "$(axis)-axis / mm"
+    xguide --> "$(axes)-axis / mm"
     yguide --> "Mechanical Index"
-    return string.(get_axis_positions(Val(axis), coordinates)), metric.val
+    return display_axis(coordinates, axes), metric.val
 end
 
 @recipe function plot(
@@ -114,7 +111,7 @@ end
         axes,
         coordinates,
     )
-    title --> type(metric) * " ($(slice_axis)slice $slice)"
+    title --> type(metric) * " ($(slice_axis)=$slice)"
     xguide --> "$(axes[1])-axis / mm"
     yguide --> "$(axes[2])-axis / mm"
     return data
@@ -137,7 +134,7 @@ end
         axes,
         coordinates,
     )
-    title --> type(metric) * " ($(slice_axis)slice $slice)"
+    title --> type(metric) * " ($(slice_axis)=$slice)"
     xguide --> "$(axes[1])-axis / mm"
     yguide --> "$(axes[2])-axis / mm"
     return data
@@ -160,7 +157,7 @@ end
         axes,
         coordinates,
     )
-    title --> type(metric) * " ($(slice_axis)slice $slice)"
+    title --> type(metric) * " ($(slice_axis)=$slice)"
     xguide --> "$(axes[1])-axis / mm"
     yguide --> "$(axes[2])-axis / mm"
     return data
@@ -180,9 +177,8 @@ function plot_3d_metric(
               ;coordinates=scan.coordinates")
     end
     if slice isa Unitful.Length
-        slice = ustrip(uconvert(u"m", slice))
         positions = get_axis_positions(Val(slice_axis), coordinates)
-        slice = findnearest(positions, slice)
+        slice = findnearest(positions, uconvert(u"m", slice))
     end
     slice_axis_size = get_axis_size(Val(slice_axis), data)
     if slice < 1 || slice > slice_axis_size
@@ -198,9 +194,8 @@ function plot_2d_metric(data, coordinates, axes)
         error("You must set coordinates from scan in keyword arg:
               ;coordinates=scan.coordinates")
     end
-    first_axis, second_axis = Val(Symbol(axes[1])), Val(Symbol(axes[2]))
-    return string.(get_axis_positions(first_axis, coordinates)),
-           string.(get_axis_positions(second_axis, coordinates)),
+    return display_axis(coordinates, axes[1]),
+           display_axis(coordinates, axes[2]),
            data
 end
 
@@ -212,6 +207,11 @@ function get_slice(xslice, yslice, zslice)
     !isnan(xslice) && return xslice, :x
     !isnan(yslice) && return yslice, :y
     return zslice, :z
+end
+
+function display_axis(coordinates, axis)
+    axis = Val(Symbol(axis))
+    return string.(round.(typeof(1.0mm), get_axis_positions(axis, coordinates); digits=2))
 end
 
 findnearest(A::AbstractArray,t) = findmin(abs.(A.-t))[2]

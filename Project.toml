@@ -14,11 +14,11 @@ Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulRecipes = "42071c24-d89e-48dd-8a24-8a12d9b8861f"
 
 [compat]
-HydrophoneCalibrations = "0.1"
+HydrophoneCalibrations = "0.2"
 InstrumentConfig = "0.2"
 RecipesBase = "1.1"
-ThorlabsLTStage = "0.2"
 TcpInstruments = "0.6"
+ThorlabsLTStage = "0.3"
 Unitful = "1.7"
 UnitfulRecipes = "1.1"
 julia = "1"
