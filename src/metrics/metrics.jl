@@ -1,6 +1,3 @@
-using HydrophoneCalibrations
-
-include("tmp_metrics.jl")
 include("plots.jl")
 include("specific_pressure.jl")
 include("mechanical_index.jl")
@@ -14,9 +11,9 @@ function get_metrics(scan::Union{Scan1D, Scan2D, Scan3D}, params::ScanParameters
     voltage = scan.waveform
     pressure = voltage * params.calibration_factor
 
-    isppa = intensity_sppa(pressure, params.medium, params.excitation)
-    ispta = intensity_spta(pressure, params.medium, params.excitation)
-    mi = mechanical_index(pressure, params.excitation)
+    isppa = calc_intensity_sppa(pressure, params.medium, params.excitation)
+    ispta = calc_intensity_spta(pressure, params.medium, params.excitation)
+    mi = calc_mechanical_index(pressure, params.excitation)
 
     isppa_max =  get_max(scan.coordinates, isppa.val)
     ispta_max = get_max(scan.coordinates, ispta.val)

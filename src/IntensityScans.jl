@@ -2,6 +2,9 @@ module IntensityScans
 
 using TcpInstruments
 using ThorlabsLTStage
+using HydrophoneCalibrations
+using IntensityMetrics
+
 using Unitful
 using Unitful: s, ms, mm, m
 
