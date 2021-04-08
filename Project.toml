@@ -17,6 +17,7 @@ UnitfulRecipes = "42071c24-d89e-48dd-8a24-8a12d9b8861f"
 [compat]
 HydrophoneCalibrations = "0.2"
 InstrumentConfig = "0.2"
+IntensityMetrics = "0.3"
 RecipesBase = "1.1"
 TcpInstruments = "0.6"
 ThorlabsLTStage = "0.3"
