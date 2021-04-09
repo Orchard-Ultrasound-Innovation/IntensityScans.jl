@@ -27,14 +27,13 @@ scope = initialize(AgilentDSOX4034A)
 channel = 1
 number_of_samples = get_data(scope, channel).info.num_points
 
-scanner = IntensityScan(lts, scope, channel, number_of_samples)
 scanner = IntensityScan(
     xyz = lts, 
     scope = scope, 
     channel = 1, 
     precapture_delay = 0u"µs",
     sample_size = 65104,
-    postmove_delay = 0u"s",
+    post_move_delay = 0u"s",
 )
 
 wave_x = scan_x(scanner, [0u"m", 100u"mm"], 5)
