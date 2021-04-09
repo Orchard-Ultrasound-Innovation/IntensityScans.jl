@@ -21,7 +21,7 @@ IntensityMetrics = "0.3"
 RecipesBase = "1.1"
 TcpInstruments = "0.8"
 ThorlabsLTStage = "0.3"
-Unitful = "1.7"
+Unitful = "1.6, 1.7"
 UnitfulRecipes = "1.1"
 julia = "1"
 
