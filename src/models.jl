@@ -4,6 +4,7 @@ using RecipesBase
 const PressureArray{x} = Array{T, x} where T <: Union{Unitful.Pressure, Number}
 const Volt = typeof(1.0u"V")
 const Meter = typeof(1.0u"m")
+const Sec = typeof(1.0u"s")
 
 
 squeeze(A::PressureArray{2}) = A[1, :]
@@ -74,7 +75,7 @@ struct Scan1D
     version::VersionNumber
     axes::String
     scope_info::TcpInstruments.ScopeInfo
-    time::Array{T, 1} where {T<:Time}
+    time::Vector{Sec}
     waveform::Array{Volt, 2}
     coordinates::Array{Meter, 2}
     metrics::Union{Nothing, ScanMetric}
@@ -83,7 +84,7 @@ end
 function Scan1D(
     axes::AbstractString,
     scope_info::TcpInstruments.ScopeInfo,
-    time::Array{T, 1} where {T<:Time}
+    time::AbstractArray,
     samples_per_waveform,
     number_of_scanning_points_first_axis,
 )
@@ -102,7 +103,7 @@ struct Scan2D
     version::VersionNumber
     axes::String
     scope_info::TcpInstruments.ScopeInfo
-    time::Array{T, 1} where {T<:Time}
+    time::Vector{Sec}
     waveform::Array{Volt, 3}
     coordinates::Array{Meter, 3}
     metrics::Union{Nothing, ScanMetric}
@@ -111,7 +112,7 @@ end
 function Scan2D(
     axes::AbstractString,
     scope_info::TcpInstruments.ScopeInfo,
-    time::Array{T, 1} where {T<:Time}
+    time::AbstractArray,
     sample_size_of_single_scan,
     number_of_scans_first_axis::Int,
     number_of_scans_second_axis::Int,
@@ -133,7 +134,7 @@ struct Scan3D
     version::VersionNumber
     axes::String
     scope_info::TcpInstruments.ScopeInfo
-    time::Array{T, 1} where {T<:Time}
+    time::Vector{Sec}
     waveform::Array{Volt, 4}
     coordinates::Array{Meter, 4}
     metrics::Union{Nothing, ScanMetric}

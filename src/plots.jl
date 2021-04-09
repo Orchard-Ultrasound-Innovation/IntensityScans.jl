@@ -13,7 +13,7 @@
         count += 1
     end
     if count == 0
-        if isnothing(scan)
+        if isnothing(scan.metrics)
             raw = true
             count = 1
         else
@@ -27,7 +27,7 @@
     layout --> (count, 1)
     if raw
         @series begin
-        time_unit, scaled_time = autoscale_seconds(scan.time)
+        time_unit, scaled_time = TcpInstruments.autoscale_seconds(scan.time)
 
         title --> "Scan1D"
         xguide --> "Measurement Index / 1 ($(scan.axes) axis)"
@@ -76,7 +76,7 @@ end
         count += 1
     end
     if count == 0
-        if isnothing(scan)
+        if isnothing(scan.metrics)
             raw = true
             count = 1
         else
@@ -90,7 +90,7 @@ end
     layout --> (count, 1)
     if raw
         @series begin
-        time_unit, scaled_time = autoscale_seconds(scan.time)
+        time_unit, scaled_time = TcpInstruments.autoscale_seconds(scan.time)
 
         title --> "Scan2D"
         xguide --> "Measurement Index / 1",
@@ -156,7 +156,7 @@ end
         count += 1
     end
     if count == 0
-        if isnothing(scan)
+        if isnothing(scan.metrics)
             raw = true
             count = 1
         else
@@ -170,7 +170,7 @@ end
     layout --> (count, 1)
     if raw
         @series begin
-        time_unit, scaled_time = autoscale_seconds(scan.time)
+        time_unit, scaled_time = TcpInstruments.autoscale_seconds(scan.time)
 
         title --> "Scan3D"
         xguide --> "Measurement Index / 1"
@@ -220,29 +220,4 @@ end
         end
     end
 end
-
-# TODO: TcpInstruments.autoscale should be made more generic, then use that
-function autoscale_seconds(time)
-    # temp = filter(x->x != 0, abs.(data.time))
-    # @info "test", temp == data.time
-    # m = min(temp...)
-    unit = "seconds"
-    time_array = time
-    m = abs(min(time...))
-    if m >= 1
-    elseif m < 1 && m >= 1e-3
-        unit = "ms" # miliseconds
-        time_array = time * 1e3
-    elseif m < 1e-3 && m >= 1e-6
-        unit = "μs" # microseconds
-        time_array = time * 1e6
-    elseif m < 1e-6 && m >= 1e-9
-        unit = "ns" # nanoseconds
-        time_array = time * 1e9
-    else
-        @info "Seconds unit not found"
-    end
-    return unit, time_array
-end
-
 
