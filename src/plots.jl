@@ -36,7 +36,7 @@
         yguide --> "Time / " * time_unit
         seriestype := :heatmap
 
-        scaled_time = round.(scaled_time; digits=2)
+        scaled_time = round.(typeof(1.0u"s"), scaled_time; digits=2)
         return string.(1:size(scan.coordinates, 2)), string.(scaled_time),  ustrip(scan.waveform)
         end
     end
@@ -99,7 +99,7 @@ end
         colorbar_title --> "Voltage / V"
         seriestype := :heatmap
 
-        scaled_time = round.(scaled_time; digits=2)
+        scaled_time = round.(typeof(1.0u"s"), scaled_time; digits=2)
         waveform = ustrip(scan.waveform)
         waveform = vcat([waveform[:, :, i] for i in 1:size(waveform, 3)]...)
         position_idx = []
@@ -179,7 +179,7 @@ end
         xticks --> 3
         seriestype := :heatmap
 
-        scaled_time = round.(scaled_time; digits=2)
+        scaled_time = round.(typeof(1.0u"s"), scaled_time; digits=2)
         waveform = ustrip(scan.waveform)
         # Collapse y first. 3rd dimension
         waveform = vcat([waveform[:, :, i, :] for i in 1:size(waveform, 3)]...)
